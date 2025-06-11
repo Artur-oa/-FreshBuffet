@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css'; // если есть общий CSS (TailwindCss)
+import './style.css'; // если есть общий CSS (TailwindCss)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
