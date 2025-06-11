@@ -1,5 +1,6 @@
 const RecipesService = require("../services/Recipes.service");
 const formatResponse = require("../utils/formatResponse");
+const { Favorite } = require("../../db/models")
 
 class RecipesController {
   // Метод для получения всех пользователей из API
@@ -50,6 +51,7 @@ class RecipesController {
     }
   }
 
+
   // Метод для загрузки данных из API в БД
   static async loadFromApi(req, res) {
     try {
@@ -61,6 +63,18 @@ class RecipesController {
       res.status(500).json(formatResponse(500, "Ошибка загрузки из Spoonacular", null, message));
     }
   }
+
+ // Метод добавления рецепта в избранное
+  // static async addToFavorites(req, res) {
+  //   try {
+  //     if (!req.)
+  //   } catch (error) {
+      
+  //   }
+  // }
+
+
+
 }
 
 module.exports = RecipesController;
