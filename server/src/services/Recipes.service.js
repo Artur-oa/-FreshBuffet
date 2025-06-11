@@ -10,7 +10,6 @@ class RecipesService {
   static async getById(id) {
     return await Recipe.findByPk(id)
   } 
-
 }
 
 module.exports = RecipesService;
