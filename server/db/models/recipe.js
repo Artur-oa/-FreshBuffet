@@ -12,11 +12,12 @@ module.exports = (sequelize, DataTypes) => {
   Recipe.init(
     {
       title: DataTypes.STRING,
-      description: DataTypes.STRING,
-      instructions: DataTypes.STRING,
-      imageUrl: DataTypes.STRING,
+      description: DataTypes.TEXT,
+      instructions: DataTypes.TEXT,
+      imageUrl: DataTypes.STRING(1000),
       cookTime: DataTypes.INTEGER,
       ingredientCount: DataTypes.INTEGER,
+      apiId: DataTypes.INTEGER,
     },
     {
       sequelize,
