@@ -2,8 +2,9 @@ const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const removeXPoweredBy = require('../middlewares/removeHeader')
 
-// const removeXPoweredBy = require("../middlewares/removeHeader");
+
 const indexRouter = require("../routes/index.router");
 
 const corsOptions = {
@@ -26,7 +27,7 @@ function serverConfig(app) {
 
   // Подключение самописной мидлварки для скрытия заголовка
   // X-Powered-By: Express
-  // app.use(removeXPoweredBy)
+  app.use(removeXPoweredBy)
 
   // Роуты
   app.use("/api", indexRouter);
