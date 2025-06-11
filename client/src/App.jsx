@@ -3,10 +3,14 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 import AuthPage from './features/auth/ui/AuthPage/AuthPage';
 import Root from './app/Root';
 import MainPage from './pages/MainPage';
+
 import UserApi from './entities/user/UserApi';
 import { UserValidator } from './entities/user/User.validator';
 import { setAccessToken } from './shared/lib/axiosInstance';
 import ProtectedRoute from './utils/ProtectedRoute/ProtectedRoute';
+
+import RecipeDetailsPage from './pages/RecipeDetailsPage';
+
 
 function App() {
   // const [user, setUser] = useState(null);
@@ -111,6 +115,7 @@ function App() {
               </ProtectedRoute>
             }
           /> */}
+
           <Route
             path="/auth"
             element={
@@ -137,7 +142,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/recipes" element={<MainPage user={user} />} />
+          <Route path='/recipes' element={<MainPage user={user} />} />
+          <Route path='/recipes/:id' element={<RecipeDetailsPage user={user} />} />
+
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,5 +1,6 @@
 const RecipesService = require("../services/Recipes.service");
 const formatResponse = require("../utils/formatResponse");
+const { Favorite } = require("../../db/models")
 
 class RecipesController {
   // Метод для получения всех пользователей
@@ -28,6 +29,16 @@ class RecipesController {
       res.status(500).json(formatResponse(500, "Внутренняя ошибка сервера", null, message))
     }
   }
+
+ // Метод добавления рецепта в избранное
+  // static async addToFavorites(req, res) {
+  //   try {
+  //     if (!req.)
+  //   } catch (error) {
+      
+  //   }
+  // }
+
 
 }
 
