@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 
 import Root from './app/Root';
 import MainPage from './pages/MainPage';
+import RecipeDetailsPage from './pages/RecipeDetailsPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -16,6 +17,7 @@ function App() {
             element={<AuthPage user={user} setUser={setUser} />}
           /> */}
           <Route path='/recipes' element={<MainPage user={user} />} />
+          <Route path='/recipes/:id' element={<RecipeDetailsPage user={user} />} />
         </Route>
       </Routes>
     </BrowserRouter>
