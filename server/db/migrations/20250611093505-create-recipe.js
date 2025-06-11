@@ -13,19 +13,23 @@ module.exports = {
         type: Sequelize.STRING,
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       instructions: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       imageUrl: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(1000),
       },
       cookTime: {
         type: Sequelize.INTEGER,
       },
       ingredientCount: {
         type: Sequelize.INTEGER,
+      },
+      apiId: {
+        type: Sequelize.INTEGER,
+        unique: true, // чтобы не было дубликатов
       },
       createdAt: {
         allowNull: false,

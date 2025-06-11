@@ -10,23 +10,18 @@ class RecipesApi {
 
     return response.data;
   }
-}
 
-export default RecipesApi;
+  static async getPaginated(page = 1, limit = 9) {
+    const response = await axios.get(
+      `${VITE_TARGET}${VITE_API}/recipes?page=${page}&limit=${limit}`
+    );
+    return response.data;
+  }
 
-// ИЛИ
-/* import axios from 'axios';
-
-const { VITE_TARGET, VITE_API } = import.meta.env;
-
-class RecipesApi {
-  static async getAll() {
-    const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes`, {
-      withCredentials: true,
-    });
-
+  static async loadFromApi() {
+    const response = await axios.post(`${VITE_TARGET}${VITE_API}/recipes/load`);
     return response.data;
   }
 }
 
-export default RecipesApi; */
+export default RecipesApi;
