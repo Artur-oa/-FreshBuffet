@@ -5,6 +5,12 @@ class RecipesService {
   static async getAll() {
     return await Recipe.findAll();
   }
+
+  // Метод для получения одного рецепта по первичному ключу id
+  static async getById(id) {
+    return await Recipe.findByPk(id)
+  } 
+
 }
 
 module.exports = RecipesService;

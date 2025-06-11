@@ -14,6 +14,21 @@ class RecipesController {
       res.status(500).json(formatResponse(500, "Внутренняя ошибка сервера", null, message));
     }
   }
+   // Метод получения одного рецепта по id
+  static async getRecipeById (req, res) {
+    try {
+      const { id } = req.params
+      const recipe = await RecipesService.getById(id)
+      if (!recipe) {
+        return res.status(404).json(formatResponse(404, "Рецепт не найден", null, "Рецепт не найден"))
+    } 
+      res.status(200).json(formatResponse(200, "Рецепт получен", recipe))
+    }  catch ({message}) {
+      console.error(message)
+      res.status(500).json(formatResponse(500, "Внутренняя ошибка сервера", null, message))
+    }
+  }
+
 }
 
 module.exports = RecipesController;
