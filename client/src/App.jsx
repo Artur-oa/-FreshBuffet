@@ -41,7 +41,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Root user={user} setUser={setUser} />}>
           <Route path="/favorites" element={<FavoritesPage user={user} />} />
-          <Route
+          {/* <Route
             path="/auth"
             element={
               <ProtectedRoute
@@ -51,7 +51,9 @@ function App() {
                 <AuthPage isAuthProp="login" setUser={setUser} />
               </ProtectedRoute>
             }
-          />
+          /> */}
+
+          <Route path="/auth" element={<AuthPage isAuthProp="auth" setUser={setUser} />}></Route>
           <Route path="/recipes" element={<MainPage user={user} setUser={setUser}/>} />
           <Route
             path="/recipes/:id"
