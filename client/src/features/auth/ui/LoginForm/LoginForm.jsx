@@ -1,73 +1,82 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router'
-import { UserValidator } from '../../../../entities/user/User.validator'
-import  UserApi  from '../../../../entities/user/UserApi'
-import { setAccessToken } from '../../../../shared/lib/axiosInstance'
-
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { UserValidator } from '../../../../entities/user/User.validator';
+import UserApi from '../../../../entities/user/UserApi';
+import { setAccessToken } from '../../../../shared/lib/axiosInstance';
 
 const INITIAL_INPUT_DATA = {
   email: '',
-  passwordHash: ''
-}
+  passwordHash: '',
+};
 
-export default function LoginForm({ setUser}) {
-  const [inputs, setInputs] = useState(INITIAL_INPUT_DATA)
+export default function LoginForm({ user, setUser }) {
+  const [inputs, setInputs] = useState(INITIAL_INPUT_DATA);
 
-  const navigate = useNavigate()
-  
-  const changeHandler = (event) => {
-    setInputs((pre) => ({...pre, [event.target.name]: event.target.value}))
-  }
+  const navigate = useNavigate();
 
-  const sumbitHandler = async (e) => {
-    e.preventDefault()
+  const changeHandler = event => {
+    setInputs(pre => ({ ...pre, [event.target.name]: event.target.value }));
+  };
+
+  const sumbitHandler = async e => {
+    e.preventDefault();
     try {
-      const { isValid, error } = UserValidator.validateLogin(inputs)
+      const { isValid, error } = UserValidator.validateLogin(inputs);
 
       if (isValid) {
-        const data = await UserApi.login(inputs)
+        const data = await UserApi.login(inputs);
         if (data.statusCode === 200 && data.data.accessToken) {
           // setUsers((pre) => [...pre, data.data.user])
-          setUser((pre) => ({...pre, ...data.data.user}))
+          setUser(pre => ({ ...pre, ...data.data.user }));
           // * сохраняем токен на клиенте
-          setAccessToken(data.data.accessToken)
-          navigate('/recipes')  
+          setAccessToken(data.data.accessToken);
+          navigate('/recipes');
         } else {
-        //   console.log('============>>', data.response.data)
-          return alert(data.response.data.error)
+          //   console.log('============>>', data.response.data)
+          return alert(data.response.data.error);
         }
       } else {
-        console.log('Ошибка из валидатора', error)
-        return alert(error)
+        console.log('Ошибка из валидатора', error);
+        return alert(error);
       }
     } catch (error) {
-    //   console.log('~~~~~~>>', error)
-      return alert(error.response.data.error)
+      //   console.log('~~~~~~>>', error)
+      return alert(error.response.data.error);
     }
-  }
-    return (
-    <>
-    <form onSubmit={sumbitHandler}>
-    <div>
-        <div>Адрес электронной почты</div>
-        <input
-        name='email'
+  };
+
+  const { email, password } = inputs;
+  
+  return (
+    <form
+      onSubmit={sumbitHandler}
+      className='space-y-1 w-full max-w-sm mx-auto'
+    >
+      <input
         type='email'
-        required
+        name='email'
+        placeholder='Email'
+        autoFocus
         onChange={changeHandler}
-        value={inputs.email}
-        />
-        <div>Пароль</div>
-        <input
-        name='passwordHash'
+        value={email}
+        className='w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-400'
+      />
+
+      <input
         type='password'
-        required
+        name='passwordHash'
+        placeholder='Пароль'
         onChange={changeHandler}
-        value={inputs.passwordHash}
-        />
-    </div>
-    <button type='submit'>Войти</button>
+        value={password}
+        className='w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-400'
+      />
+
+      <button
+        type='submit'
+        className='w-full bg-black text-white py-2 rounded-md hover:bg-gray-900 transition-all font-medium mt-2'
+      >
+        Войти
+      </button>
     </form>
-    </>
-  )
+  );
 }

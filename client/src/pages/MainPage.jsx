@@ -1,32 +1,34 @@
 import { useEffect, useState } from 'react';
 import RecipesApi from '../entities/recipes/RecipesApi';
+import { useNavigate } from 'react-router';
 
-function MainPage({ user }) {
+function MainPage({ user, myUser }) {
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [noMore, setNoMore] = useState(false);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   async function getAllRecipesPaginated() {
-  //     try {
-  //       setLoading(true);
-  //       const data = await RecipesApi.getPaginated(1);
-  //       if (data.statusCode === 200) {
-  //         setRecipes(data.data);
-  //         if (data.data.length < 9) setNoMore(true);
-  //       } else {
-  //         console.error('Ошибка сервера при загрузке рецептов:', data);
-  //       }
-  //     } catch (error) {
-  //       console.error('Ошибка загрузки рецептов:', error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
+  useEffect(() => {
+    async function getAllRecipesPaginated() {
+      try {
+        setLoading(true);
+        const data = await RecipesApi.getPaginated(1);
+        if (data.statusCode === 200) {
+          setRecipes(data.data);
+          if (data.data.length < 9) setNoMore(true);
+        } else {
+          console.error('Ошибка сервера при загрузке рецептов:', data);
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки рецептов:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  //   getAllRecipesPaginated();
-  // }, []);
+    getAllRecipesPaginated();
+  }, []);
 
   async function loadMoreRecipes() {
     try {
@@ -38,8 +40,6 @@ function MainPage({ user }) {
       if (data.statusCode === 200 && data.data.length === 0) {
         console.warn('Рецептов больше нет — загружаем из внешнего API...');
         const loadResult = await RecipesApi.loadFromApi();
-        console.log('Загружено из API:', loadResult);
-
         // Пробуем ещё раз получить данные после загрузки
         data = await RecipesApi.getPaginated(nextPage);
       }
@@ -60,7 +60,7 @@ function MainPage({ user }) {
   }
 
   return (
-    <div className='p-6 max-w-7xl mx-auto'>
+    <div className='p-4 max-w-l mx-auto'>
       <div className='mb-8 text-center'>
         <h2 className='text-2xl font-light text-gray-700'>
           Привет{user?.name ? `, ${user.name}` : ''} 👋
@@ -78,6 +78,7 @@ function MainPage({ user }) {
         {recipes.map(recipe => (
           <div
             key={recipe.id}
+            onClick={() => navigate(`/recipes/${recipe.id}`)}
             className='bg-white border border-orange-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-4 flex flex-col items-center'
           >
             <img

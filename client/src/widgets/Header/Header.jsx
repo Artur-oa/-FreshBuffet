@@ -22,36 +22,54 @@ function Header({ user, setUser }) {
   };
 
   return (
-    <header className="p-4 bg-gray-100 text-center">
-      <h1 className="text-xl font-semibold">🍽️ Fresh Buffet</h1>
+    <header className='bg-white shadow-sm border-b border-orange-100 py-4 mb-8'>
+      <div className='max-w-7xl mx-auto px-6 box-border flex items-center justify-between'>
+        {/* ЛОГО (слева) */}
+        <div className='flex-1 basis-0'>
+          <NavLink to='/recipes' className='text-lime-700 text-xl font-bold'>
+            <img
+              src='../../../public/assets/logo_2_3.png'
+              alt='Логотип FreshBuffet'
+              className='h-12 w-auto object-contain'
+            />
+          </NavLink>
+        </div>
 
-      <div className="max-w-700 center wrap-float">
-        <nav className="clearfix mar-b-1">
-          <ul className="no-bullets no-margin no-padding right">
-            <li className="pipe-separate t-light-green left">
-              <NavLink to="/">Главная страница</NavLink>
-            </li>
-            {user ? (
-              <li
-                className="pipe-separate t-light-green left"
+        {/* НАЗВАНИЕ (по центру) */}
+        <div className='flex-1 basis-0 text-center'>
+          <h1 className='text-3xl font-bold text-emerald-700 tracking-tight'>
+            FreshBuffet
+          </h1>
+        </div>
+
+        {/* КНОПКА + ИМЯ (справа) */}
+        <div className='flex-1 basis-0 flex justify-end'>
+          {user ? (
+            <div className='flex items-center gap-6'>
+              <span className='text-gray-800 text-xl font-semibold'>
+                {user.name}
+              </span>
+              <button
                 onClick={logoutHandler}
+                className='bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-500 transition-all text-base'
               >
-                <NavLink to="/">Выйти</NavLink>
-              </li>
-            ) : (
-              <>
-                <li className="pipe-separate t-light-green left">
-                  <NavLink to="/auth">Войти</NavLink>
-                </li>
-              </>
-            )}
-            {user && (
-              <li>
-                <NavLink to="/favorites">Избранное</NavLink>
-              </li>
-            )}
-          </ul>
-        </nav>
+                Выйти
+              </button>
+            </div>
+          ) : (
+            <NavLink
+              to='/auth'
+              className='bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-500 transition-all text-base'
+            >
+              Войти
+            </NavLink>
+          )}
+          {user && (
+            <li>
+              <NavLink to='/favorites'>Избранное</NavLink>
+            </li>
+          )}
+        </div>
       </div>
     </header>
   );

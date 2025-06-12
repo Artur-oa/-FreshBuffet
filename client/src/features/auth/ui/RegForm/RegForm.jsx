@@ -15,22 +15,23 @@ export default function RegForm({ setUser }) {
 
   const navigate = useNavigate();
 
-  const changeHandler = (event) => {
-    setInputs((pre) => ({ ...pre, [event.target.name]: event.target.value }));
+  const changeHandler = event => {
+    setInputs(pre => ({ ...pre, [event.target.name]: event.target.value }));
   };
 
-  const sumbitHandler = async (e) => {
+  const sumbitHandler = async e => {
     e.preventDefault();
     try {
       const { isValid, error } = UserValidator.validate(inputs);
 
       if (isValid) {
         const data = await UserApi.register(inputs);
-        console.log('------------------',data);
+        console.log('------------------', data);
 
         if (data.statusCode === 200 && data.data.accessToken) {
           // setUsers((pre) => [...pre, data.data.user])
-          setUser((pre) => ({ ...pre, ...data.data.user }));
+          setUser(pre => ({ ...pre, ...data.data.user }));
+          
           // * сохраняем токен на клиенте
           setAccessToken(data.data.accessToken);
           navigate('/recipes');
@@ -53,37 +54,47 @@ export default function RegForm({ setUser }) {
     }
   };
 
+  const { username, email, password } = inputs;
+
   return (
-    <>
-      <form onSubmit={sumbitHandler}>
-        <div>
-          <div>Имя</div>
-          <input
-            name="name"
-            type="text"
-            required
-            onChange={changeHandler}
-            value={inputs.name}
-          />
-          <div>Адрес электронной почты</div>
-          <input
-            name="email"
-            type="email"
-            required
-            onChange={changeHandler}
-            value={inputs.email}
-          />
-          <div>Пароль</div>
-          <input
-            name="passwordHash"
-            type="password"
-            required
-            onChange={changeHandler}
-            value={inputs.passwordHash}
-          />
-        </div>
-        <button type="submit">Зарегестрироваться</button>
-      </form>
-    </>
+    <form
+      onSubmit={sumbitHandler}
+      className='space-y-1 w-full max-w-sm mx-auto'
+    >
+      <input
+        type='text'
+        name='name'
+        placeholder='Имя пользователя'
+        autoFocus
+        onChange={changeHandler}
+        value={username}
+        className='w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-400'
+      />
+
+      <input
+        type='email'
+        name='email'
+        placeholder='Email'
+        onChange={changeHandler}
+        value={email}
+        className='w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-400'
+      />
+
+      <input
+        type='password'
+        name='passwordHash'
+        placeholder='Пароль'
+        onChange={changeHandler}
+        value={password}
+        className='w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-400'
+      />
+
+      <button
+        type='submit'
+        className='w-full bg-black text-white py-2 rounded-md hover:bg-gray-900 transition-all font-medium mt-2'
+      >
+        Зарегистрироваться
+      </button>
+    </form>
   );
 }
