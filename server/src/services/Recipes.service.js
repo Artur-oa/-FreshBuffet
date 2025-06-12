@@ -20,6 +20,7 @@ class RecipesService {
     const recipes = await Recipe.findAll({
       limit, // Количество рецептов, которое нужно получить
       offset, // Количество рецептов, которое нужно пропустить (для следующей страницы)
+      order: [['id', 'ASC']]
     });
 
     return recipes;
