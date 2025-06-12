@@ -10,6 +10,12 @@ class RecipesApi {
 
     return response.data;
   }
+
+  static async getById(id) {
+  const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/${id}`);
+  return response.data;
+}
+
 }
 
 export default RecipesApi;
@@ -27,6 +33,12 @@ class RecipesApi {
 
     return response.data;
   }
+
+  static async getById(id) {
+  const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/${id}`);
+  return response.data;
+}
+
 }
 
 export default RecipesApi; */
