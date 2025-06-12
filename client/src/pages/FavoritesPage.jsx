@@ -50,8 +50,8 @@ export default function FavoritesPage({ user }) {
     const fetchFavorites = async () => {
       try {
 
-        const data = await UserApi.getFavorites();
-        setRecipes(data && data.length ? data : []); // если с сервера нет данных, отдаём []
+        // const data = await UserApi.getFavorites();
+        // setRecipes(data && data.length ? data : []); // если с сервера нет данных, отдаём []
 
         const data = await UserApi.getFavorites(user.id); // реализуй на стороне UserApi
         
