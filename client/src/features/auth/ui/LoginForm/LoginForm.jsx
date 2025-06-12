@@ -10,7 +10,7 @@ const INITIAL_INPUT_DATA = {
   passwordHash: ''
 }
 
-export default function LoginForm({ user, setUser}) {
+export default function LoginForm({ setUser}) {
   const [inputs, setInputs] = useState(INITIAL_INPUT_DATA)
 
   const navigate = useNavigate()
@@ -31,7 +31,7 @@ export default function LoginForm({ user, setUser}) {
           setUser((pre) => ({...pre, ...data.data.user}))
           // * сохраняем токен на клиенте
           setAccessToken(data.data.accessToken)
-          navigate('/')  
+          navigate('/recipes')  
         } else {
         //   console.log('============>>', data.response.data)
           return alert(data.response.data.error)
@@ -60,7 +60,7 @@ export default function LoginForm({ user, setUser}) {
         <div>Пароль</div>
         <input
         name='passwordHash'
-        type='passwordHash'
+        type='password'
         required
         onChange={changeHandler}
         value={inputs.passwordHash}

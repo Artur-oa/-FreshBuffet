@@ -33,7 +33,7 @@ export default function RegForm({ setUser }) {
           setUser((pre) => ({ ...pre, ...data.data.user }));
           // * сохраняем токен на клиенте
           setAccessToken(data.data.accessToken);
-          navigate('/');
+          navigate('/recipes');
         } else {
           // console.log('============>>', data.response.data);
           return alert(data.response.data.error);
@@ -76,7 +76,7 @@ export default function RegForm({ setUser }) {
           <div>Пароль</div>
           <input
             name="passwordHash"
-            type="passwordHash"
+            type="password"
             required
             onChange={changeHandler}
             value={inputs.passwordHash}

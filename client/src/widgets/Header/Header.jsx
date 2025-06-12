@@ -11,8 +11,8 @@ const navigate = useNavigate()
       const data = await UserApi.logout()
       // console.log(data)
       if (data.statusCode === 200) {
-        setUser(() => ({}))
-        navigate('/')
+        setUser(null)
+        navigate('/recipes')
       } else {
         console.log(data.error)
       }
@@ -34,7 +34,7 @@ const navigate = useNavigate()
             <li className="pipe-separate t-light-green left">
               <NavLink to="/">Главная страница</NavLink>
             </li>
-            {user.name ? (
+            {user ? (
               <li className="pipe-separate t-light-green left" onClick={logoutHandler}>
                 <NavLink to="/">Выйти</NavLink>
               </li>
@@ -42,9 +42,6 @@ const navigate = useNavigate()
               <>
                 <li className="pipe-separate t-light-green left">
                   <NavLink to="/auth">Войти</NavLink>
-                </li>
-                <li className="pipe-separate t-light-green left" >
-                  <NavLink to="/auth">Регистрация</NavLink>
                 </li>
               </>
             )}
