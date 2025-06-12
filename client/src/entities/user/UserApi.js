@@ -43,20 +43,20 @@ export default class UserApi {
     return data;
   }
 
-  static async getFavorites() {
-  const { data } = await axiosInstance.get('/favorites');
+  static async getFavorites(userId) {
+  const { data } = await axiosInstance.get(`/recipes/favorites/${userId}`);
   return data; // массив рецептов
 }
 
   // Добавить рецепт в избранное
-  static async addFavorite(recipeId) {
-    const { data } = await axiosInstance.post(`/favorites/${recipeId}`);
+  static async addFavorite(recipeId, userId) {
+    const { data } = await axiosInstance.post(`/recipes/favorites/${recipeId}`, { userId });
     return data;
   }
 
   // Удалить рецепт из избранного
   static async removeFavorite(recipeId) {
-    const { data } = await axiosInstance.delete(`/favorites/${recipeId}`);
+    const { data } = await axiosInstance.delete(`/recipes/favorites/${recipeId}`);
     return data;
   }
 }

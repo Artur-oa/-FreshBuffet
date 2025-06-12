@@ -14,6 +14,8 @@ import FavoritesPage from './pages/FavoritesPage';
 
 function App() {
   const [user, setUser] = useState(null);
+
+  
   // const [users, setUsers] = useState([]);
 
   // const [user, setUser] = useState({});
@@ -50,7 +52,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/recipes" element={<MainPage user={user} />} />
+          <Route path="/recipes" element={<MainPage user={user} setUser={setUser}/>} />
           <Route
             path="/recipes/:id"
             element={<RecipeDetailsPage user={user} />}
