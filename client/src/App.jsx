@@ -10,18 +10,13 @@ import { setAccessToken } from './shared/lib/axiosInstance';
 import ProtectedRoute from './utils/ProtectedRoute/ProtectedRoute';
 
 import RecipeDetailsPage from './pages/RecipeDetailsPage';
-
+import FavoritesPage from './pages/FavoritesPage';
 
 function App() {
   const [user, setUser] = useState(null);
   // const [users, setUsers] = useState([]);
 
-
   // const [user, setUser] = useState({});
-
-
-
-
 
   useEffect(() => {
     const getUser = async () => {
@@ -42,19 +37,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Root user={user} setUser={setUser} />} >
-          {/* <Route
-            path="/избранное"
-            element={
-              <ProtectedRoute
-                isAuthenticated={!user.login ? true : false}
-                redirectTo="/"
-              >
-                <AuthPage user={user} setUser={setUser} />
-              </ProtectedRoute>
-            }
-          /> */}
-
+        <Route path="/" element={<Root user={user} setUser={setUser} />}>
+          <Route path="/favorites" element={<FavoritesPage user={user} />} />
           <Route
             path="/auth"
             element={
@@ -66,9 +50,11 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path='/recipes' element={<MainPage user={user} />} />
-          <Route path='/recipes/:id' element={<RecipeDetailsPage user={user} />} />
-
+          <Route path="/recipes" element={<MainPage user={user} />} />
+          <Route
+            path="/recipes/:id"
+            element={<RecipeDetailsPage user={user} />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
