@@ -1,21 +1,19 @@
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router';
-import AuthPage from './features/auth/ui/AuthPage/AuthPage';
-import Root from './app/Root';
-import MainPage from './pages/MainPage';
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router";
+import AuthPage from "./features/auth/ui/AuthPage/AuthPage";
+import Root from "./app/Root";
+import MainPage from "./pages/MainPage";
 
-import UserApi from './entities/user/UserApi';
-import { UserValidator } from './entities/user/User.validator';
-import { setAccessToken } from './shared/lib/axiosInstance';
-import ProtectedRoute from './utils/ProtectedRoute/ProtectedRoute';
+import UserApi from "./entities/user/UserApi";
+import { UserValidator } from "./entities/user/User.validator";
+import { setAccessToken } from "./shared/lib/axiosInstance";
+import ProtectedRoute from "./utils/ProtectedRoute/ProtectedRoute";
 
-import RecipeDetailsPage from './pages/RecipeDetailsPage';
-import FavoritesPage from './pages/FavoritesPage';
+import RecipeDetailsPage from "./pages/RecipeDetailsPage";
+import FavoritesPage from "./pages/FavoritesPage";
 
 function App() {
   const [user, setUser] = useState(null);
-
-  
   // const [users, setUsers] = useState([]);
 
   // const [user, setUser] = useState({});
@@ -36,6 +34,19 @@ function App() {
     getUser();
   }, []);
 
+  const getfavorites = async () => {
+    const response = await UserApi.getFavorites(user?.id);
+    if (response.data?.length) {
+      user.favorites = response.data?.map(el => el?.id);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      getfavorites();
+    }
+  }, [user]);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -52,7 +63,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/recipes" element={<MainPage user={user} setUser={setUser}/>} />
+          <Route
+            path="/recipes"
+            element={<MainPage user={user} setUser={setUser} />}
+          />
           <Route
             path="/recipes/:id"
             element={<RecipeDetailsPage user={user} />}
