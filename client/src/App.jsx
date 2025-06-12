@@ -14,7 +14,7 @@ import FavoritesPage from './pages/FavoritesPage';
 
 function App() {
   const [user, setUser] = useState(null);
-  console.log('--------------.>>>>>>>>>>>>', user);
+
   
   // const [users, setUsers] = useState([]);
 
