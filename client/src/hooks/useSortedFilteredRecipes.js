@@ -6,8 +6,8 @@ export default function useSortedFilteredRecipes(recipes, sortType, filter) {
       if (!filter) return true;
       const word = filter.toLowerCase();
       if (r.title.toLowerCase().includes(word)) return true;
-      if (r.description.includes(word)) return true;
-      if (r.instructions.includes(word)) return true;
+      // if (r.description.includes(word)) return true;
+      // if (r.instructions.includes(word)) return true;
       if (!isNaN(Number(filter))) {
         if (r.cookTime === Number(filter)) return true;
         if (r.ingredientCount === Number(filter)) return true;

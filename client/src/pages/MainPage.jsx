@@ -149,12 +149,12 @@ function MainPage({ user, myUser, setUser }) {
       </h1>
 
 
-//       <div className='recipes-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+{/* //       <div className='recipes-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
 //         {recipes.map(recipe => (
 //           <div
 //             key={recipe.id}
 //             onClick={() => navigate(`/recipes/${recipe.id}`)}
-//             className='bg-white border border-orange-200 rounded-xl shadow-sm hover:shadow-xl hover:scale-102 hover:-translate-y-1 transition-transform transition-shadow duration-300 ease-in-out p-4 flex flex-col items-center cursor-pointer'
+//             className='bg-white border border-orange-200 rounded-xl shadow-sm hover:shadow-xl hover:scale-102 hover:-translate-y-1 transition-transform transition-shadow duration-300 ease-in-out p-4 flex flex-col items-center cursor-pointer' */}
 
       <div className="mb-8 p-4 bg-orange-50 rounded-lg">
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -225,12 +225,12 @@ function MainPage({ user, myUser, setUser }) {
               <p>
                 <span className='font-semibold text-orange-400/80'>
 
-//             <h2 className="text-lg font-medium text-gray-800 text-center mb-2">
+{/* //             <h2 className="text-lg font-medium text-gray-800 text-center mb-2">
 //               {recipe.title}
 //             </h2>
 //             <div className="text-sm text-gray-600 text-center space-y-1">
 //               <p>
-//                 <span className="font-semibold text-orange-500">
+//                 <span className="font-semibold text-orange-500"> */}
 
                   Ингредиенты:
                 </span>{' '}
