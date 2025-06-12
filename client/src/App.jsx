@@ -11,17 +11,17 @@ import ProtectedRoute from './utils/ProtectedRoute/ProtectedRoute';
 
 import RecipeDetailsPage from './pages/RecipeDetailsPage';
 
-
 function App() {
-  // const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
+  
   const [inputs, setInputs] = useState({
     name: '',
     email: '',
     passwordHash: '',
   });
 
-  const [user, setUser] = useState({});
+  // const [user, setUser] = useState({});
 
   const [validateError, setValidateError] = useState('');
 
@@ -33,7 +33,7 @@ function App() {
       if (isValid) {
         const data = await UserApi.register(inputs);
         if (data.statusCode === 200 && data.data.accessToken) {
-          setUsers((users) => [...users, data.data.user]);
+          setUsers(users => [...users, data.data.user]);
           setInputs({
             name: '',
             email: '',
@@ -60,7 +60,7 @@ function App() {
       if (isValid) {
         const data = await UserApi.login(inputs);
         if (data.statusCode === 200 && data.data.accessToken) {
-          setUsers((users) => [...users, data.data.user]);
+          setUsers(users => [...users, data.data.user]);
           setInputs({
             email: '',
             passwordHash: '',
@@ -79,7 +79,7 @@ function App() {
   }
 
   function inputsHandler(e) {
-    setInputs((inputs) => ({ ...inputs, [e.target.name]: e.target.value }));
+    setInputs(inputs => ({ ...inputs, [e.target.name]: e.target.value }));
   }
 
   useEffect(() => {
@@ -89,7 +89,7 @@ function App() {
         const data = await UserApi.refresh();
         // console.log('refresh data:+++++++++++++++++', data);
         if (data.statusCode === 200 && data.data.accessToken) {
-          setUser((pre) => ({ ...pre, ...data.data.user }));
+          setUser(pre => ({ ...pre, ...data.data.user }));
           setAccessToken(data.data.accessToken);
           console.log(data.data.accessToken);
         }
@@ -103,48 +103,44 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Root user={user} setUser={setUser} />} >
-          {/* <Route
-            path="/избранное"
-            element={
-              <ProtectedRoute
-                isAuthenticated={!user.login ? true : false}
-                redirectTo="/"
-              >
-                <AuthPage user={user} setUser={setUser} />
-              </ProtectedRoute>
-            }
-          /> */}
+        <Route path='/' element={<Root user={user} setUser={setUser} />}>
+          {/* Редирект с корня на /recipes */}
+          <Route index element={<Navigate to='/recipes' replace />} />
 
           <Route
-            path="/auth"
+            path='/auth'
             element={
               <ProtectedRoute
                 isAuthenticated={user.login ? true : false}
-                redirectTo="/recipes"
+                redirectTo='/recipes'
               >
-                <AuthPage isAuthProp="login" setUser={setUser} />
+                <AuthPage isAuthProp='login' setUser={setUser} />
               </ProtectedRoute>
             }
           />
+
           <Route
-            path="/auth/register"
+            path='/auth/register'
             element={
               <ProtectedRoute
                 isAuthenticated={user.login ? true : false}
-                redirectTo="/recipes"
+                redirectTo='/recipes'
               >
                 <AuthPage
-                  isAuthProp="register"
+                  isAuthProp='register'
                   setUser={setUser}
                   setUsers={setUsers}
                 />
               </ProtectedRoute>
             }
           />
-          <Route path='/recipes' element={<MainPage user={user} />} />
-          <Route path='/recipes/:id' element={<RecipeDetailsPage user={user} />} />
 
+          <Route path='/recipes' element={<MainPage user={user} />} />
+
+          <Route
+            path='/recipes/:id'
+            element={<RecipeDetailsPage user={user} />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
