@@ -10,9 +10,11 @@ export default function FavoriteIcon({ isFavorite, onClick, className = '' }) {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        fill={isFavorite ? '#f97316' : 'none'}
-        stroke={isFavorite ? '#f97316' : '#6b7280'}
-        className="w-6 h-6"
+        fill={isFavorite ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        className={`w-6 h-6 ${
+          isFavorite ? 'text-orange-400' : 'text-lime-700'
+        }`}
       >
         <path
           strokeLinecap="round"
