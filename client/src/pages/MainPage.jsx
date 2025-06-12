@@ -1,17 +1,17 @@
-import useSortedFilteredRecipes from '../hooks/useSortedFilteredRecipes';
-import { useEffect, useState } from 'react';
-import RecipesApi from '../entities/recipes/RecipesApi';
-import { useNavigate } from 'react-router';
-import IconStar from '../shared/ui/FavoriteIcon/IconStar';
-import UserApi from '../entities/user/UserApi';
+import useSortedFilteredRecipes from "../hooks/useSortedFilteredRecipes";
+import { useEffect, useState } from "react";
+import RecipesApi from "../entities/recipes/RecipesApi";
+import { useNavigate } from "react-router";
+import IconStar from "../shared/ui/FavoriteIcon/IconStar";
+import UserApi from "../entities/user/UserApi";
 
 function MainPage({ user, myUser, setUser }) {
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [noMore, setNoMore] = useState(false);
-  const [sortType, setSortType] = useState('');
-  const [filter, setFilter] = useState('');
+  const [sortType, setSortType] = useState("");
+  const [filter, setFilter] = useState("");
   const navigate = useNavigate();
 
   // Получаем отсортированные и отфильтрованные рецепты
@@ -38,14 +38,14 @@ function MainPage({ user, myUser, setUser }) {
 
               if (loadResponse.statusCode !== 200) {
                 stillNeedData = false;
-                console.warn('Не удалось загрузить из внешнего API');
+                console.warn("Не удалось загрузить из внешнего API");
               }
             } else {
               fetchedRecipes.push(...newRecipes);
             }
           } else {
             stillNeedData = false;
-            console.error('Ошибка при получении рецептов:', data);
+            console.error("Ошибка при получении рецептов:", data);
           }
 
           currentPage++;
@@ -55,7 +55,7 @@ function MainPage({ user, myUser, setUser }) {
         setPage(currentPage - 1);
         if (fetchedRecipes.length < desiredCount) setNoMore(true);
       } catch (error) {
-        console.error('Ошибка загрузки рецептов:', error.message);
+        console.error("Ошибка загрузки рецептов:", error.message);
       } finally {
         setLoading(false);
       }
@@ -72,7 +72,7 @@ function MainPage({ user, myUser, setUser }) {
 
       // Если сервер вернул пустой массив — пробуем загрузить с внешнего API
       if (data.statusCode === 200 && data.data.length === 0) {
-        console.warn('Рецептов больше нет — загружаем из внешнего API...');
+        console.warn("Рецептов больше нет — загружаем из внешнего API...");
         const loadResult = await RecipesApi.loadFromApi();
         // Пробуем ещё раз получить данные после загрузки
         data = await RecipesApi.getPaginated(nextPage);
@@ -87,7 +87,7 @@ function MainPage({ user, myUser, setUser }) {
         }
       }
     } catch (error) {
-      console.error('Ошибка при подгрузке рецептов:', error);
+      console.error("Ошибка при подгрузке рецептов:", error);
     } finally {
       setLoading(false);
     }
@@ -97,7 +97,7 @@ function MainPage({ user, myUser, setUser }) {
     try {
       if (!user) {
         alert(
-          'Добавление в избранное доступно только для зарегистрированных пользователей!'
+          "Добавление в избранное доступно только для зарегистрированных пользователей!"
         );
         return;
       }
@@ -108,7 +108,7 @@ function MainPage({ user, myUser, setUser }) {
 
       let response;
       if (user.favorites.includes(recipeId)) {
-        response = await UserApi.removeFavorite(recipeId);
+        response = await UserApi.removeFavorite(recipeId, userId);
       } else {
         response = await UserApi.addFavorite(recipeId, userId);
       }
@@ -125,16 +125,16 @@ function MainPage({ user, myUser, setUser }) {
         }
         setUser(updatedUser);
       } else {
-        throw new Error(response.message || 'Ошибка при обновлении избранного');
+        throw new Error(response.message || "Ошибка при обновлении избранного");
       }
     } catch (err) {
-      alert('Ошибка при обновлении избранного!');
+      alert("Ошибка при обновлении избранного!");
       console.error(err);
     }
   }
 
   return (
-    <div className='p-4 max-w-l mx-auto'>
+    <div className="p-4 max-w-l mx-auto">
       {/* <div className='mb-8 text-center'>
         <h2 className='text-2xl font-light text-gray-700'>
           Привет{user?.name ? `, ${user.name}` : ''} 👋
@@ -148,8 +148,7 @@ function MainPage({ user, myUser, setUser }) {
         Рецепты
       </h1>
 
-
-{/* //       <div className='recipes-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+      {/* //       <div className='recipes-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
 //         {recipes.map(recipe => (
 //           <div
 //             key={recipe.id}
@@ -186,66 +185,60 @@ function MainPage({ user, myUser, setUser }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {sortedRecipes.map((recipe) => (
-          <div
-            key={recipe.id}
-            onClick={() => navigate(`/recipes/${recipe.id}`)}
-            className="bg-white border border-orange-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-4 flex flex-col items-center relative cursor-pointer"
+        {sortedRecipes?.map((recipe) => (
+            <div
+              key={recipe.id}
+              onClick={() => navigate(`/recipes/${recipe.id}`)}
+              className="bg-white border border-orange-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-4 flex flex-col items-center relative cursor-pointer"
+            >
+              <IconStar
+                isFavorite={user?.favorites?.includes(recipe.id) || false}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!user) {
+                    alert(
+                      "Добавление в избранное доступно только для зарегистрированных пользователей!"
+                    );
+                    return;
+                  }
+                  handleFavorite(recipe.id, user.id);
+                }}
+                className="absolute top-2 right-2 z-10 hover:scale-110 transition-transform"
+              />
 
-          >
-            <IconStar
-              isFavorite={user?.favorites?.includes(recipe.id) || false}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!user) {
-                  alert(
-                    'Добавление в избранное доступно только для зарегистрированных пользователей!'
-                  );
-                  return;
-                }
-                handleFavorite(recipe.id, user.id);
-              }}
-              className="absolute top-2 right-2 z-10 hover:scale-110 transition-transform"
-            />
+              <img
+                src={recipe.imageUrl}
+                alt={recipe.title}
+                className="w-full h-44 object-cover rounded-md mb-3"
+              />
 
-            <img
-              src={recipe.imageUrl}
-              alt={recipe.title}
-              className="w-full h-44 object-cover rounded-md mb-3"
-            />
+              {/* Заголовок рецепта с прозрачностью */}
+              <h2 className="text-lg font-medium text-gray-600 text-center mb-2 text-opacity-70">
+                {recipe.title}
+              </h2>
 
-
-            {/* Заголовок рецепта с прозрачностью */}
-            <h2 className='text-lg font-medium text-gray-600 text-center mb-2 text-opacity-70'>
-              {recipe.title}
-            </h2>
-
-            {/* Описание рецепта с прозрачностью */}
-            <div className='text-sm text-gray-500 text-center space-y-1 text-opacity-70'>
-              <p>
-                <span className='font-semibold text-orange-400/80'>
-
-{/* //             <h2 className="text-lg font-medium text-gray-800 text-center mb-2">
+              {/* Описание рецепта с прозрачностью */}
+              <div className="text-sm text-gray-500 text-center space-y-1 text-opacity-70">
+                <p>
+                  <span className="font-semibold text-orange-400/80">
+                    {/* //             <h2 className="text-lg font-medium text-gray-800 text-center mb-2">
 //               {recipe.title}
 //             </h2>
 //             <div className="text-sm text-gray-600 text-center space-y-1">
 //               <p>
 //                 <span className="font-semibold text-orange-500"> */}
-
-                  Ингредиенты:
-                </span>{' '}
-                {recipe.ingredientCount}
-              </p>
-              <p>
-
-                <span className='font-semibold text-orange-400/80'>
-                  ⏰ Время:
-                </span>{' '}
-
-                {recipe.cookTime} мин
-              </p>
+                    Ингредиенты:
+                  </span>{" "}
+                  {recipe.ingredientCount}
+                </p>
+                <p>
+                  <span className="font-semibold text-orange-400/80">
+                    ⏰ Время:
+                  </span>{" "}
+                  {recipe.cookTime} мин
+                </p>
+              </div>
             </div>
-          </div>
         ))}
       </div>
 
@@ -256,7 +249,7 @@ function MainPage({ user, myUser, setUser }) {
             disabled={loading}
             className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-all disabled:opacity-50"
           >
-            {loading ? 'Загрузка...' : 'Загрузить ещё'}
+            {loading ? "Загрузка..." : "Загрузить ещё"}
           </button>
         </div>
       )}
@@ -264,8 +257,8 @@ function MainPage({ user, myUser, setUser }) {
       {sortedRecipes.length === 0 && !loading && (
         <p className="text-center text-gray-400 mt-6">
           {filter
-            ? 'Ничего не найдено. Попробуйте изменить фильтр.'
-            : 'Рецептов пока нет.'}
+            ? "Ничего не найдено. Попробуйте изменить фильтр."
+            : "Рецептов пока нет."}
         </p>
       )}
 
