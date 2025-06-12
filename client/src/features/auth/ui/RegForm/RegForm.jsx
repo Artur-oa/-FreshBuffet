@@ -27,8 +27,6 @@ export default function RegForm({ setUser }) {
 
       if (isValid) {
         const data = await UserApi.register(inputs);
-        console.log('------------------', data);
-
         if (data.statusCode === 200 && data.data.accessToken) {
           // setUsers((pre) => [...pre, data.data.user])
           setUser(pre => ({ ...pre, ...data.data.user }));
@@ -39,22 +37,14 @@ export default function RegForm({ setUser }) {
           const btn = document.getElementById('reg-btn');
           btn.style.setProperty('--active', '1');
 
-          setTimeout(() => {
-            btn.style.removeProperty('--active');
-            navigate('/recipes');
-          }, 5000); // по желанию увеличь
-
-          // navigate('/recipes');
+          navigate('/recipes');
         } else {
-          // console.log('============>>', data.response.data);
           return alert(data.response.data.error);
         }
       } else {
-        console.log('Ошибка из валидатора', error);
         return alert(error);
       }
     } catch (error) {
-      console.log('~~~~~~>>', error);
       // return alert(error.response.data.error)
       if (error.response?.data?.error) {
         return alert(error.response.data.error);
