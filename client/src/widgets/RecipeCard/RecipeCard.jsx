@@ -10,7 +10,7 @@ export default function RecipeCard({ recipe, user, onFavoriteUpdate }) {
       if (isFavorite) {
         await UserApi.removeFavorite(recipe.id);
       } else {
-        await UserApi.addFavorite(recipe.id);
+        await UserApi.addFavorite(recipe.id, user.id);
       }
       if (onFavoriteUpdate) onFavoriteUpdate(); // для обновления списка избранного в родителе
     } catch (err) {
