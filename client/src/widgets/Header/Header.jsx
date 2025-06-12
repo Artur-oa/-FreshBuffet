@@ -1,57 +1,59 @@
-import React from "react"
-import { NavLink, useNavigate } from "react-router"
-import UserApi from "../../entities/user/UserApi"
+import { NavLink, useNavigate } from 'react-router';
+import UserApi from '../../entities/user/UserApi';
+// import './Header.css';
 
-function Header({ user, setUser }) {
+export default function Header({ user, setUser }) {
+  const navigate = useNavigate();
 
-const navigate = useNavigate()
-
-  const logoutHandler = async () => {
+  const handleSignOut = async () => {
     try {
-      const data = await UserApi.logout()
-      // console.log(data)
-      if (data.statusCode === 200) {
-        setUser(() => ({}))
-        navigate('/')
+      const response = await UserApi.signOut();
+      if (response.statusCode === 200) {
+        setUser(null);
+        navigate('/');
       } else {
-        console.log(data.error)
+        alert(response.error || 'Ошибка при выходе');
       }
     } catch (error) {
-      console.log(error)
-      return alert(error.response.data.error)
+      console.error(error);
+      alert('Ошибка при выходе');
     }
-  }
+  };
 
   return (
-    <header className='p-4 bg-gray-100 text-center'>
-      <h1 className='text-xl font-semibold'>🍽️ Fresh Buffet</h1>
+    <header className='bg-white shadow-sm border-b border-orange-100 py-4 mb-8'>
+      <div className='max-w-7xl mx-auto px-6 box-border flex items-center justify-between'>
+        {/* ЛОГО (слева) */}
+        <div className='flex-1 basis-0'>
+          <NavLink to='/' className='text-orange-600 text-xl font-bold'>
+            🍽️ Лого
+          </NavLink>
+        </div>
 
+        {/* НАЗВАНИЕ (по центру) */}
+        <div className='flex-1 basis-0 text-center'>
+          <h1 className='text-2xl font-semibold text-gray-800'>FreshBuffet</h1>
+        </div>
 
-    
-      <div className="max-w-700 center wrap-float">
-        <nav className="clearfix mar-b-1">
-          <ul className="no-bullets no-margin no-padding right">
-            <li className="pipe-separate t-light-green left">
-              <NavLink to="/">Главная страница</NavLink>
-            </li>
-            {user.name ? (
-              <li className="pipe-separate t-light-green left" onClick={logoutHandler}>
-                <NavLink to="/">Выйти</NavLink>
-              </li>
-            ) : (
-              <>
-                <li className="pipe-separate t-light-green left">
-                  <NavLink to="/auth">Войти</NavLink>
-                </li>
-                <li className="pipe-separate t-light-green left" >
-                  <NavLink to="/auth">Регистрация</NavLink>
-                </li>
-              </>
-            )}
-          </ul>
-        </nav>
+        {/* КНОПКА (справа) */}
+        <div className='flex-1 basis-0 flex justify-end'>
+          {user ? (
+            <button
+              onClick={handleSignOut}
+              className='bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-all text-sm'
+            >
+              Выйти
+            </button>
+          ) : (
+            <NavLink
+              to='/auth'
+              className='bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-all text-sm'
+            >
+              Войти
+            </NavLink>
+          )}
+        </div>
       </div>
     </header>
   );
 }
-export default Header;

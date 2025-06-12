@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const removeXPoweredBy = require('../middlewares/removeHeader')
 
-
 const indexRouter = require("../routes/index.router");
 
 const corsOptions = {

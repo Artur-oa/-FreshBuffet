@@ -4,9 +4,9 @@ import Footer from '../widgets/Footer/Footer';
 
 export default function Root({ user, setUser }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-100 via-lime-100 to-green-100 text-gray-800">
+    <div className='flex flex-col min-h-screen overflow-x-hidden bg-gradient-to-br from-orange-100 via-lime-100 to-green-100'>
       <Header user={user} setUser={setUser} />
-      <main className="p-4">
+      <main className='flex-1 flex flex-col w-full max-w-full overflow-x-hidden'>
         <Outlet />
       </main>
       <Footer />

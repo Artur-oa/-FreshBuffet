@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import RecipesApi from '../entities/recipes/RecipesApi';
+import { Menu, X } from 'lucide-react'; 
+import UserApi from '../entities/user/UserApi';
 
 function MainPage({ user }) {
   const [recipes, setRecipes] = useState([]);
@@ -60,7 +62,7 @@ function MainPage({ user }) {
   }
 
   return (
-    <div className='p-6 max-w-7xl mx-auto'>
+    <div className='px-20 py-8 w-full mx-auto'>
       <div className='mb-8 text-center'>
         <h2 className='text-2xl font-light text-gray-700'>
           Привет{user?.name ? `, ${user.name}` : ''} 👋

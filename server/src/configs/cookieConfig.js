@@ -1,14 +1,4 @@
-const jwtConfig = require('./jwtConfig');
-
-const cookieConfig = {
-  access: {
-    maxAge: jwtConfig.access.expiresIn,
-    httpOnly: true,
-  },
-  refresh: {
-    maxAge: jwtConfig.refresh.expiresIn,
-    httpOnly: true,
-  },
+module.exports = {
+  httpOnly: true,
+  maxAge: 1000 * 60 * 60 * 24,
 };
-
-module.exports = cookieConfig;

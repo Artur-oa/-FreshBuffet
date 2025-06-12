@@ -1,180 +1,139 @@
-const UserValidator = require("../utils/userValidator");
-const formatResponse = require("../utils/formatResponse");
-const generateTokens = require("../utils/generateTokens");
 const UserService = require("../services/User.service");
-const cookieConfig = require("../configs/cookieConfig");
+const AuthValidator = require("../utils/Auth.validator");
+const formatResponse = require("../utils/formatResponse");
 const bcrypt = require("bcrypt");
+const cookiesConfig = require("../configs/cookieConfig");
+const generateTokens = require("../utils/generateTokens");
 
 class AuthController {
-  static async register(req, res) {
+  // Регистрация нового пользователя
+  static async signUp(req, res) {
+    const { email, username, password } = req.body;
+
+    // Шаг 1. Валидация входных данных
+    const { isValid, error } = AuthValidator.validateSignUp({
+      email,
+      username,
+      password,
+    });
+
+    if (!isValid) {
+      return res.status(400).json(formatResponse(400, "Validation error", null, error));
+    }
+
+    const normalizedEmail = email.toLowerCase(); // Приведение email к нижнему регистру
+
     try {
-      const { name, email, passwordHash } = req.body;
-      const { isValid, error } = UserValidator.validate({
-        name,
-        email,
-        passwordHash,
+      // Шаг 2. Проверка, существует ли уже пользователь с таким email
+      const userFound = await UserService.getByEmail(normalizedEmail);
+
+      if (userFound) {
+        return res
+          .status(400)
+          .json(formatResponse(400, "User already exists", null, "User already exists"));
+      }
+
+      // Шаг 3. Хэширование пароля
+      const hashedPassword = await bcrypt.hash(password, 10); // 10 — уровень "соли"
+
+      // Шаг 4. Создание нового пользователя в базе
+      const newUser = await UserService.create({
+        username,
+        email: normalizedEmail,
+        passwordHash: hashedPassword,
       });
 
-      if (!isValid) {
-        res.status(400).json(
-          formatResponse({
-            statusCode: 400,
-            message: "Валидация не прошла",
-            error: error.message,
+      if (!newUser) {
+        return res
+          .status(400)
+          .json(formatResponse(400, "Failed to register user", null, "Failed to register user"));
+      }
+
+      // Шаг 5. Убираем чувствительные данные (например, пароль)
+      const plainUser = newUser.get({ plain: true });
+      delete plainUser.passwordHash;
+
+      // Шаг 5. Генерация токенов
+      const { accessToken, refreshToken } = generateTokens({ user: plainUser });
+
+      // Шаг 6.Отправка токенов клиенту
+      res
+        .status(201)
+        .cookie("refreshToken", refreshToken, cookiesConfig)
+        .json(
+          formatResponse(201, "Register successful", {
+            user: plainUser,
+            accessToken,
           }),
         );
-      } else {
-        const hashedPassword = await bcrypt.hash(passwordHash, 10);
-        const normalizedEmail = email.toLowerCase();
-        const userFound = await UserService.getByEmail(normalizedEmail);
-
-        if (userFound) {
-          res.status(400).json(
-            formatResponse({
-              statusCode: 400,
-              message: `Пользователь с почтой ${email} уже зарегистрирован`,
-              error: `Пользователь с почтой ${email} уже зарегистрирован`,
-            }),
-          );
-        } else {
-          const user = await UserService.registerUser({
-            name,
-            email: normalizedEmail,
-            passwordHash: hashedPassword,
-          });
-          delete user.passwordHash;
-          const { accessToken, refreshToken } = generateTokens({ user });
-
-          res
-            .status(200)
-            .cookie("refreshTokenBuffet", refreshToken, cookieConfig.refresh)
-            .json(
-              formatResponse({
-                statusCode: 200,
-                message: "Пользователь успешно зарегистрирован",
-                data: { accessToken, user },
-              }),
-            );
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      res.status(500).json(
-        formatResponse({
-          statusCode: 500,
-          message: "Не удалось создать пользователя",
-          error: error.message,
-        }),
-      );
+    } catch ({ message }) {
+      console.error(message);
+      res.status(500).json(formatResponse(500, "Internal server error", null, message));
     }
   }
 
-  static async login(req, res) {
-    try {
-      const { email, passwordHash } = req.body;
-      const normalizedEmail = email.toLowerCase();
+  // Вход зарегистрированного пользователя
+  static async signIn(req, res) {
+    const { email, password } = req.body;
 
+    // Шаг 1. Валидация данных
+    const { isValid, error } = AuthValidator.validateSignIn({ email, password });
+
+    if (!isValid) {
+      return res.status(400).json(formatResponse(400, "Validation error", null, error));
+    }
+
+    const normalizedEmail = email.toLowerCase();
+
+    try {
+      // Шаг 2. Поиск пользователя в базе
       const user = await UserService.getByEmail(normalizedEmail);
 
       if (!user) {
-        res.status(400).json(
-          formatResponse({
-            statusCode: 400,
-            message: `Пользователь с почтой ${email} не найден`,
-            error: `Пользователь с почтой ${email} не найден`,
-          }),
-        );
-      } else {
-        // * Сравнение паролей
-        const isPasswordValid = await bcrypt.compare(passwordHash, user.passwordHash);
-
-        if (!isPasswordValid) {
-          res.status(400).json(
-            formatResponse({
-              statusCode: 400,
-              message: "Неверный пароль",
-              error: "Неверный пароль",
-            }),
-          );
-        } else {
-          delete user.passwordHash;
-
-          const { accessToken, refreshToken } = generateTokens({ user });
-
-          res
-            .status(200)
-            .cookie("refreshTokenBuffet", refreshToken, cookieConfig.refresh)
-            .json(
-              formatResponse({
-                statusCode: 200,
-                message: "Пользователь успешно авторизован",
-                data: { accessToken, user },
-              }),
-            );
-        }
+        return res.status(400).json(formatResponse(400, "User not found", null, "User not found"));
       }
-    } catch (error) {
-      console.log(error);
-      res.status(500).json(
-        formatResponse({
-          statusCode: 500,
-          message: "Не удалось войти",
-          error: error.message,
-        }),
-      );
+
+      // Шаг 3. Сравнение введённого пароля с хэшем
+      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+
+      if (!isPasswordValid) {
+        return res
+          .status(400)
+          .json(formatResponse(400, "Invalid password", null, "Invalid password"));
+      }
+
+      // Шаг 4. Очистка лишних данных
+      const plainUser = user.get({ plain: true });
+      delete plainUser.passwordHash;
+
+      // Шаг 5. Генерация токенов
+      const { accessToken, refreshToken } = generateTokens({ user: plainUser });
+
+      // Шаг 6.Отправка токенов клиенту
+      res
+        .status(200)
+        .cookie("refreshToken", refreshToken, cookiesConfig)
+        .json(
+          formatResponse(200, "Login successful", {
+            user: plainUser,
+            accessToken,
+          }),
+        );
+    } catch ({ message }) {
+      console.error(message);
+      res.status(500).json(formatResponse(500, "Internal server error", null, message));
     }
   }
 
-  static async logout(req, res) {
+  // Выход пользователя из системы
+  static async signOut(req, res) {
     try {
-      res
-        .status(200)
-        .clearCookie("refreshTokenBuffet")
-        .json(
-          formatResponse({
-            statusCode: 200,
-            message: "Успешный выход",
-          }),
-        );
-    } catch (error) {
-      console.log(error);
-      res.status(500).json(
-        formatResponse({
-          statusCode: 500,
-          message: "Не удалось выйти",
-          error: error.message,
-        }),
-      );
-    }
-  }
-
-  static async refreshTokens(req, res) {
-    try {
-      const { user } = res.locals;
-
-      const { accessToken, refreshToken } = generateTokens({ user });
-
-      res
-        .status(200)
-        .cookie("refreshTokenBuffet", refreshToken, cookieConfig.refresh)
-        .json(
-          formatResponse({
-            statusCode: 200,
-            message: "Перевыпуск токенов успешен!",
-            data: { accessToken, user },
-          }),
-        );
-    } catch (error) {
-      console.log(error);
-      res.status(500).json(
-        formatResponse({
-          statusCode: 500,
-          message: "Не удалось перевыпустить токены",
-          error: error.message,
-        }),
-      );
+      res.clearCookie("refreshToken").json(formatResponse(200, "Logout successfully"));
+    } catch ({ message }) {
+      console.error(message);
+      res.status(500).json(formatResponse(500, "Internal server error", null, message));
     }
   }
 }
 
-module.exports = AuthController
+module.exports = AuthController;

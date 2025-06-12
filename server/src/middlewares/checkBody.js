@@ -1,7 +1,7 @@
 const { User } = require("../../db/models");
 
 function checkBody(req, res, next) {
-  const { name, email, passwordHash } = req.body;
+  const { username, email, passwordHash } = req.body;
   if (!email || !passwordHash) {
     res.send("Все поля должны быть заполнены. Ответ из мидлварки");
   } else {

@@ -1,39 +1,34 @@
-export default class UserValidator {
+class AuthValidator {
   static validateSignUp({ username, email, password }) {
-    if (
-      !username ||
-      username.trim().length === 0 ||
-      typeof username !== 'string'
-    ) {
+    if (!username || username.trim().length === 0 || typeof username !== "string") {
       return {
         isValid: false,
-        error: 'Username is required and must non-empty string',
+        error: "Username is required and must non-empty string",
       };
     }
 
     if (
       !email ||
       email.trim().length === 0 ||
-      typeof email !== 'string' ||
+      typeof email !== "string" ||
       !this.validateEmail(email)
     ) {
       return {
         isValid: false,
-        error:
-          'Email is required and must non-empty string and must be valid email',
+        error: "Email is required and must non-empty string and must be valid email",
       };
     }
 
     if (
       !password ||
       password.trim().length === 0 ||
-      typeof password !== 'string' ||
+      typeof password !== "string" ||
       !this.validatePassword(password)
     ) {
       return {
         isValid: false,
         error:
-          'Password is required, must be a non-empty string, contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.',
+          "Password is required, must be a non-empty string, contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.",
       };
     }
 
@@ -44,21 +39,17 @@ export default class UserValidator {
   }
 
   static validateSignIn({ email, password }) {
-    if (!email || email.trim().length === 0 || typeof email !== 'string') {
+    if (!email || email.trim().length === 0 || typeof email !== "string") {
       return {
         isValid: false,
-        error: 'Email is required and must non-empty string.',
+        error: "Email is required and must non-empty string.",
       };
     }
 
-    if (
-      !password ||
-      password.trim().length === 0 ||
-      typeof password !== 'string'
-    ) {
+    if (!password || password.trim().length === 0 || typeof password !== "string") {
       return {
         isValid: false,
-        error: 'Password is required, must be a non-empty string.',
+        error: "Password is required, must be a non-empty string.",
       };
     }
 
@@ -92,3 +83,5 @@ export default class UserValidator {
     return true;
   }
 }
+
+module.exports = AuthValidator;

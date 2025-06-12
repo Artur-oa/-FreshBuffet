@@ -1,45 +1,46 @@
-// Импорт React и хука useState
 import React, { useState } from 'react';
-
-// Импорт компонентов форм регистрации и входа
-import RegForm from '../RegForm/RegForm';
-import LoginForm from '../LoginForm/LoginForm';
-
-// Импорт CSS-стилей для оформления страницы
+import SignUpForm from '../SignUpForm/SignUpForm';
+import SignInForm from '../SignInForm/SignInForm';
 import './AuthPage.css';
 
-// Главный компонент страницы авторизации
 export default function AuthPage({ setUser }) {
-  // Локальное состояние, которое определяет, показывать форму регистрации (true) или входа (false)
-  const [isReg, setIsReg] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(true);
 
   return (
-    // Контейнер всей страницы авторизации
-    <div className='auth-page'>
-      <div className='auth-container'>
-        
-        {/* Кнопки-переключатели вкладок */}
-        <div className='auth-tabs'>
+    <div className='w-full min-h-screen overflow-x-hidden flex items-center justify-center p-4'>
+      <div className='w-full max-w-sm min-h-[420px] bg-white rounded-xl shadow-md px-4 py-3 flex flex-col justify-start pt-3'>
+        {/* Вкладки */}
+        <div className='flex justify-around mt-6 mb-8 pl-10 pr-10'>
           <button
-            className={`auth-tab ${isReg ? 'active' : ''}`}
-            onClick={() => setIsReg(true)}
+            className={`text-lg font-semibold ${
+              isSignUp
+                ? 'text-orange-600 border-b-2 border-orange-500'
+                : 'text-gray-500'
+            }`}
+            onClick={() => setIsSignUp(true)}
           >
             Регистрация
           </button>
           <button
-            className={`auth-tab ${!isReg ? 'active' : ''}`}
-            onClick={() => setIsReg(false)}
+            className={`text-lg font-semibold ${
+              !isSignUp
+                ? 'text-orange-600 border-b-2 border-orange-500'
+                : 'text-gray-500'
+            }`}
+            onClick={() => setIsSignUp(false)}
           >
             Вход
           </button>
         </div>
 
-        {/* Отображение нужной формы */}
-        {isReg ? (
-          <RegForm setUser={setUser} />
-        ) : (
-          <LoginForm setUser={setUser} />
-        )}
+        {/* Форма */}
+        <div className='space-y-5 w-[80%] mx-auto'>
+          {isSignUp ? (
+            <SignUpForm setUser={setUser} />
+          ) : (
+            <SignInForm setUser={setUser} />
+          )}
+        </div>
       </div>
     </div>
   );
