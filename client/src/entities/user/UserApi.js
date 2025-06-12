@@ -10,8 +10,8 @@ export default class UserApi {
 
   static async register(inputs) {
     const { data } = await axiosInstance.post(`/auth/register`, inputs);
+    console.log('из апи', data);
     return data
-    // console.log(data);
     
   }
 
