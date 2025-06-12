@@ -19,8 +19,9 @@ export default function FavoritesPage({ user }) {
     // Получаем список избранных рецептов для текущего пользователя
     const fetchFavorites = async () => {
       try {
-        const data = await UserApi.getFavorites(); // реализуй на стороне UserApi
-        setRecipes(data || []);
+        const data = await UserApi.getFavorites(user.id); // реализуй на стороне UserApi
+        
+        setRecipes(data.data || []);
       } catch (error) {
         alert('Ошибка загрузки избранного');
       }
