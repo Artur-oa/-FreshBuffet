@@ -7,26 +7,26 @@ function MainPage({ user }) {
   const [loading, setLoading] = useState(false);
   const [noMore, setNoMore] = useState(false);
 
-  useEffect(() => {
-    async function getAllRecipesPaginated() {
-      try {
-        setLoading(true);
-        const data = await RecipesApi.getPaginated(1);
-        if (data.statusCode === 200) {
-          setRecipes(data.data);
-          if (data.data.length < 9) setNoMore(true);
-        } else {
-          console.error('Ошибка сервера при загрузке рецептов:', data);
-        }
-      } catch (error) {
-        console.error('Ошибка загрузки рецептов:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  // useEffect(() => {
+  //   async function getAllRecipesPaginated() {
+  //     try {
+  //       setLoading(true);
+  //       const data = await RecipesApi.getPaginated(1);
+  //       if (data.statusCode === 200) {
+  //         setRecipes(data.data);
+  //         if (data.data.length < 9) setNoMore(true);
+  //       } else {
+  //         console.error('Ошибка сервера при загрузке рецептов:', data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Ошибка загрузки рецептов:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
 
-    getAllRecipesPaginated();
-  }, []);
+  //   getAllRecipesPaginated();
+  // }, []);
 
   async function loadMoreRecipes() {
     try {

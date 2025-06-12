@@ -16,14 +16,7 @@ class RecipesApi {
   return response.data;
 }
 
-}
 
-export default RecipesApi;
-
-// ИЛИ
-/* import axios from 'axios';
-
-const { VITE_TARGET, VITE_API } = import.meta.env;
 
   static async getPaginated(page = 1, limit = 9) {
     const response = await axios.get(
@@ -36,12 +29,10 @@ const { VITE_TARGET, VITE_API } = import.meta.env;
     const response = await axios.post(`${VITE_TARGET}${VITE_API}/recipes/load`);
     return response.data;
   }
-
-  static async getById(id) {
-  const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/${id}`);
-  return response.data;
 }
-
-}
-
 export default RecipesApi;
+
+
+
+
+
