@@ -5,39 +5,13 @@ import RecipeCard from '../widgets/RecipeCard/RecipeCard';
 import UserApi from '../entities/user/UserApi';
 import useSortedFilteredRecipes from '../hooks/useSortedFilteredRecipes';
 
-const recipesData = [
-  {
-    id: 1,
-    title: 'Борщ',
-    description:
-      'Шоколадно-апельсиновые мадленки могут стать отличным дополнением к вашему набору рецептов десертов.',
-    instructions: `Разогрейте духовку до 374F,
-        Форму для печенья "Мадлен" смажьте маслом и обильно посыпьте мукой.
-        В небольшой миске смешайте муку, разрыхлитель и соль.
-        Взбейте вместе и отложите в сторону.`,
-    cookTime: 20,
-    ingredientCount: 5,
-  },
-  {
-    id: 2,
-    title: 'Каша',
-    description:
-      'Шоколадно-апельсиновые мадленки могут стать отличным дополнением к вашему набору рецептов десертов.',
-    instructions: `Разогрейте духовку до 374F,
-        Форму для печенья "Мадлен" смажьте маслом и обильно посыпьте мукой.
-        В небольшой миске смешайте муку, разрыхлитель и соль.
-        Взбейте вместе и отложите в сторону.`,
-    cookTime: 15,
-    ingredientCount: 3,
-    ingredients: ['овсянка', 'молоко', 'соль'],
-  },
-];
 
-export default function FavoritesPage({ user }) {
+export default function FavoritesPage({ user, setUser }) {
   const [recipes, setRecipes] = useState([]);
   const navigate = useNavigate();
   const [sortType, setSortType] = useState('');
   const [filter, setFilter] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Если пользователь не авторизован — редиректим на логин
@@ -50,63 +24,111 @@ export default function FavoritesPage({ user }) {
     const fetchFavorites = async () => {
       try {
 
-        // const data = await UserApi.getFavorites();
-        // setRecipes(data && data.length ? data : []); // если с сервера нет данных, отдаём []
-
-        const data = await UserApi.getFavorites(user.id); // реализуй на стороне UserApi
+        const data = await Promise.any([
+          UserApi.getFavorites(user.id),
+          
+        ]);
         
-        setRecipes(data.data || []);
+        setRecipes(data.data ||  data || []);
       } catch (error) {
+        console.error('Ошибка загрузки избранного:', error);
         alert('Ошибка загрузки избранного');
-        // Для тестов можно раскомментировать:
-        // setRecipes(recipesData);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchFavorites();
   }, [user, navigate]);
+   const handleRemoveFavorite = async (recipeId) => {
+    try {
+      // Оптимистичное обновление UI
+      setRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
+      
+      // Обновляем состояние пользователя
+      if (user?.favorites) {
+        const updatedUser = {
+          ...user,
+          favorites: user.favorites.filter(id => id !== recipeId)
+        };
+        setUser(updatedUser);
+      }
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      alert('Не удалось удалить из избранного');
+    }
+  };
+
 
   const sortedRecipes = useSortedFilteredRecipes(recipes, sortType, filter);
 
   if (!user || !user.email) {
-    return null; // Не показываем вообще ничего (произойдет редирект)
-  }
-
-  if (!recipes.length) {
-    return <div>У вас пока нет избранных рецептов.</div>;
+    return (
+      <div className="p-4 max-w-l mx-auto text-center">
+        <p className="text-lg text-gray-600">
+          Пожалуйста, войдите в систему, чтобы просматривать избранные рецепты.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2>Избранное</h2>
-      <div style={{ marginBottom: '1rem' }}>
-        <label>
-          Сортировать по:&nbsp;
-          <select
-            value={sortType}
-            onChange={(e) => setSortType(e.target.value)}
-          >
-            <option value="">---</option>
-            <option value="cookTimeAsc">Время приготовления ↑</option>
-            <option value="cookTimeDesc">Время приготовления ↓</option>
-            <option value="ingredientCountAsc">Кол-во ингредиентов ↑</option>
-            <option value="ingredientCountDesc">Кол-во ингредиентов ↓</option>
-          </select>
-        </label>
-        <label style={{ marginLeft: '1rem' }}>
-          Фильтр (слово или число):&nbsp;
-          <input
-            type="text"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            placeholder="введите слово или число"
-          />
-        </label>
+    <div className="p-4 max-w-l mx-auto">
+      <h1 className="text-4xl font-semibold text-center text-orange-600 mb-10 tracking-tight">
+        Избранные рецепты
+      </h1>
+
+      {/* Блок сортировки и фильтрации */}
+      <div className="mb-8 p-4 bg-orange-50 rounded-lg">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <label className="flex items-center">
+            <span className="mr-2 text-gray-700">Сортировать по:</span>
+            <select
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value)}
+              className="border border-orange-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="">---</option>
+              <option value="cookTimeAsc">Время приготовления ↑</option>
+              <option value="cookTimeDesc">Время приготовления ↓</option>
+              <option value="ingredientCountAsc">Кол-во ингредиентов ↑</option>
+              <option value="ingredientCountDesc">Кол-во ингредиентов ↓</option>
+            </select>
+          </label>
+          <label className="flex items-center">
+            <span className="mr-2 text-gray-700">Фильтр:</span>
+            <input
+              type="text"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder="введите слово или число"
+              className="border border-orange-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </label>
+        </div>
       </div>
-      <div className="favorites-list">
-        {sortedRecipes.map((recipe) => (
-          <RecipeCard key={recipe.id} recipe={recipe} user={user} />
-        ))}
-      </div>
+
+      {loading ? (
+        <p className="text-center">Загрузка...</p>
+      ) : sortedRecipes.length === 0 ? (
+        <p className="text-center text-gray-400">
+          {filter 
+            ? 'Ничего не найдено. Попробуйте изменить фильтр.' 
+            : 'У вас пока нет избранных рецептов.'
+          }
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {sortedRecipes.map((recipe) => (
+        <RecipeCard 
+          key={recipe.id} 
+          recipe={recipe} 
+          user={user} 
+          onRemove={handleRemoveFavorite}  // Передаем обработчик удаления
+        />
+      ))}
+    </div>
+      )}
     </div>
   );
 }
