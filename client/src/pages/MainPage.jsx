@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import RecipesApi from '../entities/recipes/RecipesApi';
 
-function MainPage({ user }) {
+function MainPage({ user, myUser }) {
+  // console.log(' user:', user);
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -60,7 +61,7 @@ function MainPage({ user }) {
   }
 
   return (
-    <div className='p-6 max-w-7xl mx-auto'>
+    <div className='p-4 max-w-l mx-auto'>
       <div className='mb-8 text-center'>
         <h2 className='text-2xl font-light text-gray-700'>
           Привет{user?.name ? `, ${user.name}` : ''} 👋

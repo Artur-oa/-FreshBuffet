@@ -1,27 +1,30 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router';
-import AuthPage from './features/auth/ui/AuthPage/AuthPage';
+
 import Root from './app/Root';
 import MainPage from './pages/MainPage';
-
-import UserApi from './entities/user/UserApi';
-import { UserValidator } from './entities/user/User.validator';
-import { setAccessToken } from './shared/lib/axiosInstance';
+import AuthPage from './features/auth/ui/AuthPage/AuthPage';
 import ProtectedRoute from './utils/ProtectedRoute/ProtectedRoute';
+import UserApi from "./entities/user/UserApi";
+import { setAccessToken } from "./shared/lib/axiosInstance";
+import { UserValidator } from "./entities/user/User.validator";
 
-import RecipeDetailsPage from './pages/RecipeDetailsPage';
+// import UserApi from './entities/user/UserApi';
+// import { UserValidator } from './entities/user/User.validator';
+// import { setAccessToken } from './shared/lib/axiosInstance';
+
+// import RecipeDetailsPage from './pages/RecipeDetailsPage';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
-  
+
   const [inputs, setInputs] = useState({
     name: '',
     email: '',
     passwordHash: '',
   });
 
-  // const [user, setUser] = useState({});
 
   const [validateError, setValidateError] = useState('');
 
@@ -82,12 +85,13 @@ function App() {
     setInputs(inputs => ({ ...inputs, [e.target.name]: e.target.value }));
   }
 
+  // Чтобы при обновлении подтягивать имя из токена
   useEffect(() => {
     // console.log('Зашли в useEffect');
     const getUser = async () => {
       try {
         const data = await UserApi.refresh();
-        // console.log('refresh data:+++++++++++++++++', data);
+        console.log('refresh data:+++++++++++++++++', data);
         if (data.statusCode === 200 && data.data.accessToken) {
           setUser(pre => ({ ...pre, ...data.data.user }));
           setAccessToken(data.data.accessToken);
@@ -129,7 +133,7 @@ function App() {
                 <AuthPage
                   isAuthProp='register'
                   setUser={setUser}
-                  setUsers={setUsers}
+                  // setUsers={setUsers}
                 />
               </ProtectedRoute>
             }
@@ -137,13 +141,14 @@ function App() {
 
           <Route path='/recipes' element={<MainPage user={user} />} />
 
-          <Route
+          {/* <Route
             path='/recipes/:id'
             element={<RecipeDetailsPage user={user} />}
-          />
+          /> */}
         </Route>
       </Routes>
     </BrowserRouter>
   );
 }
+
 export default App;
