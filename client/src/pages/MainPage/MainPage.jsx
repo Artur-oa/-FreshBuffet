@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import IconStar from '../../shared/ui/FavoriteIcon/IconStar';
 import UserApi from '../../entities/user/UserApi';
 import './MainPage.css';
-
+// Привет
 function MainPage({ user, myUser, setUser }) {
   const [recipes, setRecipes] = useState([]); // все рецепты
   const [recommendedRecipes, setRecommendedRecipes] = useState([]); // 10 рекомендуемых рецептов
