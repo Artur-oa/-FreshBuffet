@@ -107,6 +107,7 @@ export default function FavoritesPage({ user, setUser }) {
           </label>
         </div>
       </div>
+      
 
       {loading ? (
         <p className="text-center">Загрузка...</p>
@@ -124,6 +125,7 @@ export default function FavoritesPage({ user, setUser }) {
           key={recipe.id} 
           recipe={recipe} 
           user={user} 
+          setUser={setUser}
           onRemove={handleRemoveFavorite}  // Передаем обработчик удаления
         />
       ))}
