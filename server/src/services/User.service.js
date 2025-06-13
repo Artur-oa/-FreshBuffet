@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+
 const { User } = require("../../db/models");
 
 class UserService {
@@ -10,7 +10,7 @@ class UserService {
   }
 
   // & получение одного пользователя
-  static async getOneUser() {
+  static async getOneUser(id) {
     const user = await User.findByPk(id);
     const result = user.get({ plain: true });
     return result;
@@ -29,19 +29,33 @@ class UserService {
 
   // & создание пользователя
   static async registerUser({ name, email, passwordHash }) {
-    const user = await User.create({ name, email, passwordHash });
-    const result = user.get({ plain: true });
-    return result;
+    // Массив дефолтных аватарок (пути относительно public или uploads/avatars)
+    const defaultAvatars = [
+      '/public/default1.png',
+      '/public/default2.svg',
+      '/public/default3.svg'
+    ];
+    const randomAvatar = defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)];
+
+    const user = await User.create({ name, email, passwordHash, avatarUrl: randomAvatar });
+    return user.get({ plain: true });
   }
 
   // & обновление
+  // static async updateUser(id, data) {
+  //   const user = await User.update(data, { where: { id } });
+  //   if (user) {
+  //     return user;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
   static async updateUser(id, data) {
-    const user = await User.update(data, { where: { id } });
-    if (user) {
-      return user;
-    } else {
-      return false;
-    }
+    await User.update(data, { where: { id } });
+    // Вернём свежего пользователя:
+    const user = await User.findByPk(id);
+    return user ? user.get({ plain: true }) : null;
   }
 
   // & удаление
@@ -50,6 +64,8 @@ class UserService {
     user.destroy();
     return id;
   }
+
+
 }
 
 module.exports = UserService;

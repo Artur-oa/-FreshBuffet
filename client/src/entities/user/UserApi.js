@@ -2,6 +2,25 @@
 import axiosInstance from '../../shared/lib/axiosInstance';
 
 export default class UserApi {
+
+  async updateProfile(data) {
+    const res = await axiosInstance.put("/users/profile", data);
+    return res.data.data;
+  }
+  // Загрузить аватар
+  async uploadAvatar(formData) {
+    const res = await axiosInstance.put("/users/profile/avatar", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  }
+ 
+  // Получить данные пользователя (если нужно)
+  async getProfile() {
+    const res = await axiosInstance.get("/users/profile");
+    return res.data.data;
+  }
+
   static async getAll() {
     const { data } = await axiosInstance.get(`/users`);
     return data;

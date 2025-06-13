@@ -35,6 +35,8 @@ function Header({ user, setUser }) {
     }, 100);
   };
 
+  const avatarSrc = user?.avatarUrl || '/avatars/default1.png';
+
   return (
     <header className='bg-white shadow-sm border-b border-orange-100 py-3 relative'>
       <div className='max-w-7xl mx-auto px-8 flex items-center justify-between'>
@@ -57,15 +59,14 @@ function Header({ user, setUser }) {
         </NavLink>
 
         <div className='flex-1 flex justify-end items-center gap-5 relative'>
-          {user?.name ? (
+          {user?.name && (
             <NavLink
               to='/favorites'
               className='relative inline-block text-gray-700 font-medium text-2xl max-w-[150px] truncate after:block after:h-[2px] after:bg-gray-700 after:scale-x-0 after:transition-transform after:duration-300 after:origin-center hover:after:scale-x-100'
             >
               {user.name}
+              {/* Если нужен аватар: <img src={avatarSrc} alt="ава" className="inline-block w-8 h-8 rounded-full ml-2" /> */}
             </NavLink>
-          ) : (
-            ''
           )}
 
           <ThemeToggle />
