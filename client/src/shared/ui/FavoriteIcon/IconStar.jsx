@@ -14,7 +14,7 @@ export default function FavoriteIcon({ isFavorite, onClick, className = "" }) {
         fill={isFavorite ? 'currentColor' : 'none'}
         stroke='currentColor'
         className={`w-10 h-10 ${
-          isFavorite ? ' text-orange-400' : 'text-orange-300'
+          isFavorite ? ' text-orange-500' : 'text-emerald-700'
         }`}
       >
         <path

@@ -76,7 +76,7 @@ function App() {
           {/* Детальная информация рецепта */}
           <Route
             path='/recipes/:id'
-            element={<RecipeDetailsPage user={user} />}
+            element={<RecipeDetailsPage user={user} setUser={setUser}/>}
           />
           {/* <Route
             path="/auth"
