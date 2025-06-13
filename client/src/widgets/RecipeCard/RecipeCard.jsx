@@ -3,49 +3,73 @@ import UserApi from '../../entities/user/UserApi';
 import { useNavigate } from 'react-router';
 import IconStar from '../../shared/ui/FavoriteIcon/IconStar';
 
-export default function RecipeCard({ recipe, user, onRemove }) {
+export default function RecipeCard({ recipe, user, setUser}) {
   const navigate = useNavigate();
 
-  const handleFavorite = async (e) => {
-    e.stopPropagation();
-
-    if (!user) {
-      alert('Авторизуйтесь для управления избранным!');
-      return;
-    }
-
-    try {
-      console.log('Removing favorite:', recipe.id); // Логируем перед удалением
-      const response = await UserApi.removeFavorite(recipe.id);
-      console.log('Remove response:', response); // Логируем ответ
-
-      if (onRemove) {
-        onRemove(recipe.id);
-      }
-    } catch (err) {
-      console.error('Full error:', err);
-      if (err.response) {
-        console.error('Server response:', err.response.data);
-        alert(
-          `Ошибка: ${
-            err.response.data.message || 'Не удалось удалить из избранного'
-          }`
-        );
-      } else {
-        alert('Ошибка сети при удалении из избранного');
-      }
-    }
-  };
+ async function handleFavorite(recipeId, userId) {
+     try {
+       if (!user) {
+         alert(
+           "Добавление в избранное доступно только для зарегистрированных пользователей!"
+         );
+         return;
+       }
+ 
+       if (!user.favorites) {
+         user.favorites = [];
+       }
+ 
+       let response;
+       if (user.favorites.includes(recipeId)) {
+         response = await UserApi.removeFavorite(recipeId, userId);
+       } else {
+         response = await UserApi.addFavorite(recipeId, userId);
+       }
+ 
+       if (response.statusCode === 200 || response.statusCode === 201) {
+         // Обновляем список избранного у пользователя только после успешного ответа от сервера
+         const updatedUser = { ...user };
+         if (user.favorites.includes(recipeId)) {
+           updatedUser.favorites = updatedUser.favorites.filter(
+             id => id !== recipeId
+           );
+         } else {
+           updatedUser.favorites = [...updatedUser.favorites, recipeId];
+         }
+         setUser(updatedUser);
+       } else {
+         throw new Error(response.message || "Ошибка при обновлении избранного");
+       }
+     } catch (err) {
+       alert("Ошибка при обновлении избранного!");
+       console.error(err);
+     }
+   }
 
   return (
     <div
       onClick={() => navigate(`/recipes/${recipe.id}`)}
       className="bg-white border border-orange-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-4 flex flex-col items-center relative cursor-pointer"
     >
-      <IconStar
+      {/* <IconStar
         isFavorite={true} // Всегда true для страницы избранного
         onClick={handleFavorite}
         className="absolute top-2 right-2 z-10 hover:scale-110 transition-transform text-orange-500"
+      /> */}
+
+      <IconStar
+        isFavorite={user?.favorites?.includes(recipe.id) || false}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!user) {
+            alert(
+              'Добавление в избранное доступно только для зарегистрированных пользователей!'
+            );
+            return;
+          }
+          handleFavorite(recipe.id, user.id);
+        }}
+        className="absolute bottom-2 right-3 z-10 transition-transform group-hover:scale-108 group-hover:text-orange-400 cursor-pointer"
       />
 
       <img

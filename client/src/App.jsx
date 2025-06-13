@@ -62,7 +62,7 @@ function App() {
             path='/favorites'
             element={
               <ProtectedRoute isAuthenticated={user} redirectTo='/recipes'>
-                <FavoritesPage user={user} />
+                <FavoritesPage user={user} setUser={setUser}/>
               </ProtectedRoute>
             }
           />
