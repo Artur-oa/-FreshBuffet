@@ -8,6 +8,7 @@ module.exports = {
         name: 'Alice',
         email: 'alice@example.com',
         passwordHash: 'hashedpassword1',
+        avatarUrl: '/public/assets/default2.svg',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -15,6 +16,7 @@ module.exports = {
         name: 'Bob',
         email: 'bob@example.com',
         passwordHash: 'hashedpassword2',
+        avatarUrl: '../../public/assets/default3.svg',
         createdAt: new Date(),
         updatedAt: new Date()
       }
