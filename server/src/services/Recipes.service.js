@@ -1,4 +1,4 @@
-const { Recipe } = require("../../db/models");
+const { Recipe, Sequelize } = require("../../db/models");
 const axios = require("axios");
 
 const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
@@ -20,7 +20,7 @@ class RecipesService {
     const recipes = await Recipe.findAll({
       limit, // Количество рецептов, которое нужно получить
       offset, // Количество рецептов, которое нужно пропустить (для следующей страницы)
-      order: [['id', 'ASC']]
+      order: [["id", "ASC"]],
     });
 
     return recipes;
@@ -51,6 +51,13 @@ class RecipesService {
     );
 
     return savedRecipes;
+  }
+
+  static async getRandom(count) {
+    return await Recipe.findAll({
+      order: Sequelize.literal("RANDOM()"),
+      limit: count,
+    });
   }
 }
 

@@ -92,8 +92,24 @@ class RecipesController {
 
   static async getRandomRecipes(req, res) {
     try {
+      const randomRecipes = await RecipesService.getRandom(10);
+
+      res.status(200).json(
+        formatResponse({
+          statusCode: 200,
+          message: "Загружено из API",
+          data: randomRecipes,
+        }),
+      );
     } catch ({ message }) {
-      console.error();
+      console.error(error.message); // <-- Было пусто
+      res.status(500).json(
+        formatResponse({
+          statusCode: 500,
+          message: "Ошибка при получении случайных рецептов",
+          error: error.message,
+        }),
+      );
     }
   }
 }

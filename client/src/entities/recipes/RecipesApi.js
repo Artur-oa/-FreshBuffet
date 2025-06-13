@@ -12,17 +12,17 @@ class RecipesApi {
   }
 
   static async getRandomRecipes() {
-    const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/random`);
+    const response = await axios.get(
+      `${VITE_TARGET}${VITE_API}/recipes/random`
+    );
 
     return response.data;
   }
 
   static async getById(id) {
-  const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/${id}`);
-  return response.data;
-}
-
-
+    const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/${id}`);
+    return response.data;
+  }
 
   static async getPaginated(page = 1, limit = 9) {
     const response = await axios.get(
@@ -37,8 +37,3 @@ class RecipesApi {
   }
 }
 export default RecipesApi;
-
-
-
-
-

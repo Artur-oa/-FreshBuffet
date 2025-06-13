@@ -9,7 +9,8 @@ router.post("/favorites/remove/:recipeId", FavoritesController.removeFavorite);
 // Маршруты для рецептов
 router.get("/", RecipesController.getAllRecipes); // Получить все события
 router.post("/load", RecipesController.loadFromApi);
-router.get("/:id", RecipesController.getRecipeById); // Получить одно событие по id (подсказка – params)
 router.get("/random", RecipesController.getRandomRecipes); 
+router.get("/:id", RecipesController.getRecipeById); // Получить одно событие по id (подсказка – params)
+
 
 module.exports = router;

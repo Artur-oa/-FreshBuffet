@@ -69,3 +69,30 @@ html.dark canvas,
 html.dark iframe {
   filter: invert(1) hue-rotate(180deg);
 }
+
+/* Скрыть скроллбар красиво (всех браузерах) */
+/* ::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE и Edge */
+/*   scrollbar-width: none; /* Firefox */
+/* } */
+
+/* Убираем скроллбар кроссбраузерно */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE и Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;              /* Chrome, Safari */
+}
+
+.custom-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+

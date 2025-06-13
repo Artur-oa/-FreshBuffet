@@ -18,14 +18,40 @@ function MainPage({ user, myUser, setUser }) {
 
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const sortRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  /* Скролл в разделе Рекомендуемые рецепты */
+  useEffect(() => {
+    if (popularRecipes.length === 0) return;
+
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleWheel = e => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [popularRecipes]);
 
   // Получаем отсортированные и отфильтрованные рецепты
   const sortedRecipes = useSortedFilteredRecipes(recipes, sortType, filter);
 
+  /* Получение из БД рандомных рецептов */
   useEffect(() => {
     async function getPopularRecipes() {
       try {
-        
+        const data = await RecipesApi.getRandomRecipes();
+        // console.log(" data:", data);
+
+        if (data.statusCode === 200) {
+          setPopularRecipes(data.data);
+        }
       } catch (error) {
         console.error('Ошибка загрузки рецептов:', error.message);
       }
@@ -33,6 +59,7 @@ function MainPage({ user, myUser, setUser }) {
     getPopularRecipes();
   }, []);
 
+  /* Пагинация на странице */
   useEffect(() => {
     async function getInitialRecipes() {
       try {
@@ -80,6 +107,7 @@ function MainPage({ user, myUser, setUser }) {
     getInitialRecipes();
   }, []);
 
+  /* Загрузка новых рецептов на старницу */
   async function loadMoreRecipes() {
     try {
       setLoading(true);
@@ -109,6 +137,7 @@ function MainPage({ user, myUser, setUser }) {
     }
   }
 
+  /* Избранное */
   async function handleFavorite(recipeId, userId) {
     try {
       if (!user) {
@@ -149,6 +178,7 @@ function MainPage({ user, myUser, setUser }) {
     }
   }
 
+  /* Для кастомной формы сортировки */
   const SORT_OPTIONS = [
     { value: '', label: '---' },
     { value: 'cookTimeAsc', label: 'Время ↑' },
@@ -157,7 +187,7 @@ function MainPage({ user, myUser, setUser }) {
     { value: 'ingredientCountDesc', label: 'Ингредиенты ↓' },
   ];
 
-  // Закрыть при клике вне формы сортировки
+  /* Для кликов вне поля сортировки с последующим закрытие меню сортировки */
   useEffect(() => {
     function handleClickOutside(event) {
       if (sortRef.current && !sortRef.current.contains(event.target)) {
@@ -176,6 +206,45 @@ function MainPage({ user, myUser, setUser }) {
 
   return (
     <div className='p-8 max-w-l mx-auto'>
+      {/* Популярные рецепты */}
+      {popularRecipes.length > 0 && (
+        <div className='mb-12'>
+          <h1 className='text-4xl font-semibold text-center text-orange-600 mb-7 tracking-tight'>
+            Рекомендуемые рецепты
+          </h1>
+
+          {/* ОБЕРТКА: Ограничиваем ширину и центрируем */}
+          <div className='max-w-3xl mx-auto px-3'>
+            <div className='overflow-x-auto scrollbar-hide' ref={scrollRef}>
+              <div className='flex gap-6 pb-2 min-w-fit'>
+                {popularRecipes.map(recipe => (
+                  <div
+                    key={recipe.id}
+                    onClick={() => navigate(`/recipes/${recipe.id}`)}
+                    className='w-[230px] bg-white border border-orange-200 rounded-xl shadow-md
+                    p-3 flex-shrink-0 cursor-pointer
+                    hover:shadow-xl hover:border-orange-400 hover:ring-1 hover:ring-orange-200
+                    transition-all duration-300'
+                  >
+                    <img
+                      src={recipe.imageUrl}
+                      alt={recipe.title}
+                      className='w-full h-32 object-cover rounded-md mb-2'
+                    />
+                    <h3 className='text-base font-semibold text-gray-700 mb-1 text-center line-clamp-2'>
+                      {recipe.title}
+                    </h3>
+                    <p className='text-sm text-gray-500 text-center'>
+                      ⏰ {recipe.cookTime} мин · 🥗 {recipe.ingredientCount} шт.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Заголовок */}
       <h1 className='text-4xl font-semibold text-center text-orange-600 mb-7 tracking-tight'>
         Рецепты
@@ -283,7 +352,7 @@ function MainPage({ user, myUser, setUser }) {
                 <span className='font-semibold text-orange-400/80'>
                   Ингредиенты:
                 </span>{' '}
-                {recipe.ingredientCount}
+                {recipe.ingredientCount} шт.
               </p>
               <p>
                 <span className='font-semibold text-orange-400/80'>Время:</span>{' '}
