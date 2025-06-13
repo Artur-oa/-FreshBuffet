@@ -7,50 +7,51 @@ import UserApi from '../../entities/user/UserApi';
 import './MainPage.css';
 
 function MainPage({ user, myUser, setUser }) {
-  const [recipes, setRecipes] = useState([]);
-  const [popularRecipes, setPopularRecipes] = useState([]);
+  const [recipes, setRecipes] = useState([]); // все рецепты
+  const [recommendedRecipes, setRecommendedRecipes] = useState([]); // 10 рекомендуемых рецептов
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [noMore, setNoMore] = useState(false);
   const [sortType, setSortType] = useState('');
   const [filter, setFilter] = useState('');
-  const navigate = useNavigate();
-
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const sortRef = useRef(null);
   const scrollRef = useRef(null);
+  const navigate = useNavigate();
 
-  /* Скролл в разделе Рекомендуемые рецепты */
+  /* Горизонтальный скролл колесиком мыши:
+     При наведении на блок с карточками рекомендуемых рецептов
+     вертикальное колесо мыши будет работать как горизонтальное,
+     создавая smooth UX без появления горизонтального скроллбара */
   useEffect(() => {
-    if (popularRecipes.length === 0) return;
+    if (recommendedRecipes.length === 0) return;
 
     const el = scrollRef.current;
     if (!el) return;
 
     const handleWheel = e => {
       if (e.deltaY !== 0) {
-        e.preventDefault();
-        el.scrollLeft += e.deltaY;
+        e.preventDefault(); // отменяем вертикальный скролл
+        el.scrollLeft += e.deltaY; // вместо этого прокручиваем по горизонтали
       }
     };
 
     el.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => el.removeEventListener('wheel', handleWheel);
-  }, [popularRecipes]);
+  }, [recommendedRecipes]);
 
-  // Получаем отсортированные и отфильтрованные рецепты
+  /* Получаем отсортированные и отфильтрованные рецепты */
   const sortedRecipes = useSortedFilteredRecipes(recipes, sortType, filter);
 
-  /* Получение из БД рандомных рецептов */
+  /* Получение из БД рандомных (Рекомендуемых) рецептов */
   useEffect(() => {
     async function getPopularRecipes() {
       try {
         const data = await RecipesApi.getRandomRecipes();
-        // console.log(" data:", data);
 
         if (data.statusCode === 200) {
-          setPopularRecipes(data.data);
+          setRecommendedRecipes(data.data);
         }
       } catch (error) {
         console.error('Ошибка загрузки рецептов:', error.message);
@@ -59,44 +60,44 @@ function MainPage({ user, myUser, setUser }) {
     getPopularRecipes();
   }, []);
 
-  /* Пагинация на странице */
+  /* Первоначальная загрузка рецептов на странице */
   useEffect(() => {
     async function getInitialRecipes() {
       try {
         setLoading(true);
-        const desiredCount = 9;
-        let fetchedRecipes = [];
-        let currentPage = 1;
-        let stillNeedData = true;
 
-        while (fetchedRecipes.length < desiredCount && stillNeedData) {
-          const data = await RecipesApi.getPaginated(currentPage);
+        // Пробуем получить первую страницу рецептов
+        const data = await RecipesApi.getPaginated(1);
 
-          if (data.statusCode === 200) {
-            const newRecipes = data.data;
+        if (data.statusCode === 200 && data.data.length > 0) {
+          // Если есть рецепты — сохраняем их
+          setRecipes(data.data.slice(0, 9));
+          setPage(1);
+          if (data.data.length < 9) setNoMore(true);
+        } else {
+          // Если ничего нет — пробуем загрузить с внешнего API
+          const loadResponse = await RecipesApi.loadFromApi();
 
-            if (newRecipes.length === 0) {
-              // Если на текущей странице ничего нет — пробуем загрузить с внешнего API
-              const loadResponse = await RecipesApi.loadFromApi();
-
-              if (loadResponse.statusCode !== 200) {
-                stillNeedData = false;
-                console.warn('Не удалось загрузить из внешнего API');
+          if (loadResponse.statusCode === 200) {
+            // Повторно загружаем рецепты после успешной загрузки
+            const retry = await RecipesApi.getPaginated(1);
+            if (retry.statusCode === 200 && retry.data.length > 0) {
+              setRecipes(retry.data.slice(0, 9));
+              setPage(1);
+              if (retry.data.length < 9) {
+                setNoMore(true);
               }
             } else {
-              fetchedRecipes.push(...newRecipes);
+              setNoMore(true);
+              console.warn(
+                'Данные так и не появились после загрузки из внешнего API'
+              );
             }
           } else {
-            stillNeedData = false;
-            console.error('Ошибка при получении рецептов:', data);
+            setNoMore(true);
+            console.warn('Не удалось загрузить из внешнего API');
           }
-
-          currentPage++;
         }
-
-        setRecipes(fetchedRecipes.slice(0, desiredCount));
-        setPage(currentPage - 1);
-        if (fetchedRecipes.length < desiredCount) setNoMore(true);
       } catch (error) {
         console.error('Ошибка загрузки рецептов:', error.message);
       } finally {
@@ -107,7 +108,7 @@ function MainPage({ user, myUser, setUser }) {
     getInitialRecipes();
   }, []);
 
-  /* Загрузка новых рецептов на старницу */
+  /* Пагинация: загрузка следующей страницы рецептов */
   async function loadMoreRecipes() {
     try {
       setLoading(true);
@@ -206,9 +207,7 @@ function MainPage({ user, myUser, setUser }) {
 
   return (
     <div className='p-8 max-w-l mx-auto'>
-      {/* <p className='text-xl font-medium text-center text-gray-600 mb-12 tracking-tight'>Свежий вкус — каждый день!</p> */}
-      {/* Популярные рецепты */}
-      {popularRecipes.length > 0 && (
+      {recommendedRecipes.length > 0 && (
         <div className='mb-12'>
           <h1 className='text-4xl font-semibold text-center text-orange-600 mb-7 tracking-tight'>
             Рекомендуемые рецепты
@@ -218,7 +217,7 @@ function MainPage({ user, myUser, setUser }) {
           <div className='max-w-3xl mx-auto px-3'>
             <div className='overflow-x-auto scrollbar-hide' ref={scrollRef}>
               <div className='flex gap-6 pb-2 min-w-fit'>
-                {popularRecipes.map(recipe => (
+                {recommendedRecipes.map(recipe => (
                   <div
                     key={recipe.id}
                     onClick={() => navigate(`/recipes/${recipe.id}`)}
@@ -314,7 +313,7 @@ function MainPage({ user, myUser, setUser }) {
           <div
             key={recipe.id}
             onClick={() => navigate(`/recipes/${recipe.id}`)}
-            className='group bg-white border border-orange-200 rounded-xl shadow-md
+            className='w-[300px] group bg-white border border-orange-200 rounded-xl shadow-md
               p-4 flex flex-col items-center relative cursor-pointer
               transition-transform duration-300 ease-out
               hover:-translate-y-1 hover:scale-[1] hover:shadow-2xl

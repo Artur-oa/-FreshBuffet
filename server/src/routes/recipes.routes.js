@@ -11,6 +11,6 @@ router.get("/", RecipesController.getAllRecipes); // Получить все с�
 router.post("/load", RecipesController.loadFromApi);
 router.get("/random", RecipesController.getRandomRecipes); 
 router.get("/:id", RecipesController.getRecipeById); // Получить одно событие по id (подсказка – params)
-
+router.get("/:id/favoritesCount", RecipesController.getFavoritesCount);
 
 module.exports = router;

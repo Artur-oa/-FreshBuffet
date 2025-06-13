@@ -35,5 +35,14 @@ class RecipesApi {
     const response = await axios.post(`${VITE_TARGET}${VITE_API}/recipes/load`);
     return response.data;
   }
+
+  // Получить количество человек, лайкнувших рецепт
+  static async getFavoritesCount(recipeId) {
+    const { data } = await axios.get(
+      `/recipes/${recipeId}/favoritesCount`
+    );
+    return data;
+  }
+
 }
 export default RecipesApi;

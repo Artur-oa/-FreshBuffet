@@ -1,4 +1,5 @@
-const { Recipe, Sequelize } = require("../../db/models");
+const { where } = require("sequelize");
+const { Recipe, Sequelize, Favorite } = require("../../db/models");
 const axios = require("axios");
 
 const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
@@ -58,6 +59,10 @@ class RecipesService {
       order: Sequelize.literal("RANDOM()"),
       limit: count,
     });
+  }
+
+  static async getCount(id) {
+    return await Favorite.count({ where: { recipeId: id } });
   }
 }
 
