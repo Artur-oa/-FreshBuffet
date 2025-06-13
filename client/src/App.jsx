@@ -4,13 +4,13 @@ import AuthPage from './features/auth/ui/AuthPage/AuthPage';
 import Root from './app/Root';
 import MainPage from './pages/MainPage/MainPage';
 
-import UserApi from './entities/user/UserApi';
-import { UserValidator } from './entities/user/User.validator';
-import { setAccessToken } from './shared/lib/axiosInstance';
-import ProtectedRoute from './utils/ProtectedRoute/ProtectedRoute';
+import UserApi from "./entities/user/UserApi";
+import { UserValidator } from "./entities/user/User.validator";
+import { setAccessToken } from "./shared/lib/axiosInstance";
+import ProtectedRoute from "./utils/ProtectedRoute/ProtectedRoute";
 
-import RecipeDetailsPage from './pages/RecipeDetailsPage';
-import FavoritesPage from './pages/FavoritesPage';
+import RecipeDetailsPage from "./pages/RecipeDetailsPage";
+import FavoritesPage from "./pages/FavoritesPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -30,6 +30,19 @@ function App() {
     };
     getUser();
   }, []);
+
+  const getfavorites = async () => {
+    const response = await UserApi.getFavorites(user?.id);
+    if (response.data?.length) {
+      user.favorites = response.data?.map(el => el?.id);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      getfavorites();
+    }
+  }, [user]);
 
   return (
     <BrowserRouter>

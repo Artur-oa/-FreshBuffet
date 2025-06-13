@@ -55,8 +55,8 @@ export default class UserApi {
   }
 
   // Удалить рецепт из избранного
-  static async removeFavorite(recipeId) {
-    const { data } = await axiosInstance.delete(`/recipes/favorites/${recipeId}`);
+  static async removeFavorite(recipeId, userId) {
+    const { data } = await axiosInstance.post(`/recipes/favorites/remove/${recipeId}`, { userId });
     return data;
   }
 }

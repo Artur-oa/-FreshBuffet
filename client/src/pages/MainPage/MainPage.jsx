@@ -11,8 +11,8 @@ function MainPage({ user, myUser, setUser }) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [noMore, setNoMore] = useState(false);
-  const [sortType, setSortType] = useState('');
-  const [filter, setFilter] = useState('');
+  const [sortType, setSortType] = useState("");
+  const [filter, setFilter] = useState("");
   const navigate = useNavigate();
 
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
@@ -42,14 +42,14 @@ function MainPage({ user, myUser, setUser }) {
 
               if (loadResponse.statusCode !== 200) {
                 stillNeedData = false;
-                console.warn('Не удалось загрузить из внешнего API');
+                console.warn("Не удалось загрузить из внешнего API");
               }
             } else {
               fetchedRecipes.push(...newRecipes);
             }
           } else {
             stillNeedData = false;
-            console.error('Ошибка при получении рецептов:', data);
+            console.error("Ошибка при получении рецептов:", data);
           }
 
           currentPage++;
@@ -59,7 +59,7 @@ function MainPage({ user, myUser, setUser }) {
         setPage(currentPage - 1);
         if (fetchedRecipes.length < desiredCount) setNoMore(true);
       } catch (error) {
-        console.error('Ошибка загрузки рецептов:', error.message);
+        console.error("Ошибка загрузки рецептов:", error.message);
       } finally {
         setLoading(false);
       }
@@ -76,7 +76,7 @@ function MainPage({ user, myUser, setUser }) {
 
       // Если сервер вернул пустой массив — пробуем загрузить с внешнего API
       if (data.statusCode === 200 && data.data.length === 0) {
-        console.warn('Рецептов больше нет — загружаем из внешнего API...');
+        console.warn("Рецептов больше нет — загружаем из внешнего API...");
         const loadResult = await RecipesApi.loadFromApi();
         // Пробуем ещё раз получить данные после загрузки
         data = await RecipesApi.getPaginated(nextPage);
@@ -91,7 +91,7 @@ function MainPage({ user, myUser, setUser }) {
         }
       }
     } catch (error) {
-      console.error('Ошибка при подгрузке рецептов:', error);
+      console.error("Ошибка при подгрузке рецептов:", error);
     } finally {
       setLoading(false);
     }
@@ -101,7 +101,7 @@ function MainPage({ user, myUser, setUser }) {
     try {
       if (!user) {
         alert(
-          'Добавление в избранное доступно только для зарегистрированных пользователей!'
+          "Добавление в избранное доступно только для зарегистрированных пользователей!"
         );
         return;
       }
@@ -112,7 +112,7 @@ function MainPage({ user, myUser, setUser }) {
 
       let response;
       if (user.favorites.includes(recipeId)) {
-        response = await UserApi.removeFavorite(recipeId);
+        response = await UserApi.removeFavorite(recipeId, userId);
       } else {
         response = await UserApi.addFavorite(recipeId, userId);
       }
@@ -129,10 +129,10 @@ function MainPage({ user, myUser, setUser }) {
         }
         setUser(updatedUser);
       } else {
-        throw new Error(response.message || 'Ошибка при обновлении избранного');
+        throw new Error(response.message || "Ошибка при обновлении избранного");
       }
     } catch (err) {
-      alert('Ошибка при обновлении избранного!');
+      alert("Ошибка при обновлении избранного!");
       console.error(err);
     }
   }
@@ -260,10 +260,10 @@ function MainPage({ user, myUser, setUser }) {
               className='w-[94%] h-44 object-cover rounded-md mb-4 mt-2'
             />
 
-            {/* Заголовок рецепта с прозрачностью */}
-            <h2 className='text-lg font-medium text-gray-600 text-center mb-2 text-opacity-70'>
-              {recipe.title}
-            </h2>
+              {/* Заголовок рецепта с прозрачностью */}
+              <h2 className="text-lg font-medium text-gray-600 text-center mb-2 text-opacity-70">
+                {recipe.title}
+              </h2>
 
             {/* Описание рецепта с прозрачностью */}
             <div className='text-sm text-gray-500 text-center space-y-1 text-opacity-70'>
@@ -291,15 +291,15 @@ function MainPage({ user, myUser, setUser }) {
             className='bg-orange-400 text-white px-5 py-2 rounded-lg hover:bg-orange-500 text-lg 
              transform transition-transform duration-200 cursor-pointer'
           >
-            {loading ? 'Загрузка...' : 'Загрузить ещё'}
+            {loading ? "Загрузка..." : "Загрузить ещё"}
           </button>
         </div>
       )}
       {sortedRecipes.length === 0 && !loading && (
         <p className='text-center text-gray-400 mt-6'>
           {filter
-            ? 'Ничего не найдено. Попробуйте изменить фильтр.'
-            : 'Рецептов пока нет.'}
+            ? "Ничего не найдено. Попробуйте изменить фильтр."
+            : "Рецептов пока нет."}
         </p>
       )}
       {noMore && sortedRecipes.length > 0 && (

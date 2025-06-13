@@ -1,11 +1,12 @@
-import React from 'react';
+import React from "react";
 
-export default function FavoriteIcon({ isFavorite, onClick, className = '' }) {
+export default function FavoriteIcon({ isFavorite, onClick, className = "" }) {
+
   return (
     <button
       onClick={onClick}
       className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${className}`}
-      aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+      aria-label={isFavorite ? "Убрать из избранного" : "Добавить в избранное"}
     >
       <svg
         xmlns='http://www.w3.org/2000/svg'
