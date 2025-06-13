@@ -34,4 +34,38 @@
       'opsz' 40;
     font-size: 35px !important;
   }
+
+  .icon-small {
+    font-size: 23px !important;
+  }
+}
+
+/* Анимация появления */
+body {
+  transition:
+    filter 0.4s ease,
+    background-color 0.4s ease,
+    color 0.4s ease;
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Тёмная тема через фильтр */
+html.dark {
+  filter: invert(1) hue-rotate(180deg) brightness(95%) contrast(105%);
+}
+
+/* Исключаем инверсию для медиа */
+html.dark img,
+html.dark video,
+html.dark svg,
+html.dark canvas,
+html.dark iframe {
+  filter: invert(1) hue-rotate(180deg);
 }

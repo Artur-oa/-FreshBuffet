@@ -1,9 +1,10 @@
-import useSortedFilteredRecipes from '../hooks/useSortedFilteredRecipes';
+import useSortedFilteredRecipes from '../../hooks/useSortedFilteredRecipes';
 import { useEffect, useRef, useState } from 'react';
-import RecipesApi from '../entities/recipes/RecipesApi';
+import RecipesApi from '../../entities/recipes/RecipesApi';
 import { useNavigate } from 'react-router';
-import IconStar from '../shared/ui/FavoriteIcon/IconStar';
-import UserApi from '../entities/user/UserApi';
+import IconStar from '../../shared/ui/FavoriteIcon/IconStar';
+import UserApi from '../../entities/user/UserApi';
+import './MainPage.css';
 
 function MainPage({ user, myUser, setUser }) {
   const [recipes, setRecipes] = useState([]);
@@ -162,30 +163,30 @@ function MainPage({ user, myUser, setUser }) {
   }, [sortDropdownOpen]);
 
   return (
-    <div className='p-4 max-w-l mx-auto'>
+    <div className='p-8 max-w-l mx-auto'>
       {/* Заголовок */}
-      <h1 className='text-4xl font-semibold text-center text-orange-600 mb-10 tracking-tight'>
+      <h1 className='text-4xl font-semibold text-center text-orange-600 mb-7 tracking-tight'>
         Рецепты
       </h1>
 
       {/* Форма сортировки и фильтрации */}
       <div className='mb-10 flex justify-center'>
-        <div className='flex flex-col sm:flex-row gap-8 bg-white/80 border border-orange-200 rounded-xl px-6 py-4 shadow-sm'>
+        <div className='flex flex-col sm:flex-row gap-8 bg-white/80 border border-orange-200 rounded-xl px-6 py-4 shadow-sm hover:shadow-md hover:border-orange-400 hover:ring-2 hover:ring-orange-200 transition-all'>
           {/* Кастомная сортировка */}
           <div className='relative flex flex-col items-center' ref={sortRef}>
-            <span className='text-sm font-medium text-gray-700 mb-1'>
+            <span className='custom-text text-sm font-medium text-gray-700 mb-2'>
               Сортировать по:
             </span>
             <button
               onClick={() => setSortDropdownOpen(prev => !prev)}
-              className='w-52 h-10 border border-orange-300 rounded-md px-4 text-left text-gray-700 bg-white
-             hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400 flex items-center justify-between transition-all'
+              className='button-reset w-52 h-10 border border-orange-300 rounded-md px-2 text-left text-gray-700 bg-white
+             hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400 flex items-center justify-between transition-all cursor-pointer'
             >
-              <span>
+              <span className=''>
                 {SORT_OPTIONS.find(opt => opt.value === sortType)?.label ||
                   '---'}
               </span>
-              <span className='material-symbols-outlined text-gray-500 ml-10'>
+              <span className='material-symbols-outlined icon-small text-gray-500'>
                 {sortDropdownOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
               </span>
             </button>
@@ -209,7 +210,7 @@ function MainPage({ user, myUser, setUser }) {
 
           {/* Фильтр */}
           <div className='flex flex-col items-center'>
-            <span className='text-sm font-medium text-gray-700 mb-1'>
+            <span className='custom-text text-sm font-medium text-gray-700 mb-2'>
               Фильтр:
             </span>
             <input
@@ -217,9 +218,9 @@ function MainPage({ user, myUser, setUser }) {
               value={filter}
               onChange={e => setFilter(e.target.value)}
               placeholder='Найти по слову'
-              className='w-52 h-10 border border-orange-300 rounded-md px-4 text-left text-gray-700 bg-white 
+              className='input-reset w-52 h-10 border border-orange-300 rounded-md px-4 text-left text-gray-700 bg-white 
              hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400 
-             transition-all'
+             transition-all cursor-pointer'
             />
           </div>
         </div>
@@ -231,7 +232,12 @@ function MainPage({ user, myUser, setUser }) {
           <div
             key={recipe.id}
             onClick={() => navigate(`/recipes/${recipe.id}`)}
-            className='bg-white border border-orange-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-4 flex flex-col items-center relative cursor-pointer'
+            className='group bg-white border border-orange-200 rounded-xl shadow-md
+              p-4 flex flex-col items-center relative cursor-pointer
+              transition-transform duration-300 ease-out
+              hover:-translate-y-1 hover:scale-[1] hover:shadow-2xl
+              hover:border-orange-400
+              hover:ring-1 hover:ring-orange-200'
           >
             <IconStar
               isFavorite={user?.favorites?.includes(recipe.id) || false}
@@ -245,7 +251,7 @@ function MainPage({ user, myUser, setUser }) {
                 }
                 handleFavorite(recipe.id, user.id);
               }}
-              className='absolute bottom-2 right-3 z-10 hover:scale-110 transition-transform'
+              className='absolute bottom-2 right-3 z-10 transition-transform group-hover:scale-108 group-hover:text-orange-400 cursor-pointer'
             />
 
             <img
@@ -268,21 +274,22 @@ function MainPage({ user, myUser, setUser }) {
                 {recipe.ingredientCount}
               </p>
               <p>
-                <span className='font-semibold text-orange-400/80'>
-                  ⏰ Время:
-                </span>{' '}
+                <span className='font-semibold text-orange-400/80'>Время:</span>{' '}
                 {recipe.cookTime} мин
               </p>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Кнопка Загрузить ещё */}
       {!noMore && sortedRecipes.length > 0 && (
         <div className='mt-10 flex justify-center'>
           <button
             onClick={loadMoreRecipes}
             disabled={loading}
-            className='bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-all disabled:opacity-50'
+            className='bg-orange-400 text-white px-5 py-2 rounded-lg hover:bg-orange-500 text-lg 
+             transform transition-transform duration-200 cursor-pointer'
           >
             {loading ? 'Загрузка...' : 'Загрузить ещё'}
           </button>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import AuthPage from './features/auth/ui/AuthPage/AuthPage';
 import Root from './app/Root';
-import MainPage from './pages/MainPage';
+import MainPage from './pages/MainPage/MainPage';
 
 import UserApi from './entities/user/UserApi';
 import { UserValidator } from './entities/user/User.validator';
@@ -15,17 +15,12 @@ import FavoritesPage from './pages/FavoritesPage';
 function App() {
   const [user, setUser] = useState(null);
 
-  
-  // const [users, setUsers] = useState([]);
-
-  // const [user, setUser] = useState({});
-
   useEffect(() => {
     const getUser = async () => {
       try {
         const data = await UserApi.refresh();
         if (data.statusCode === 200 && data.data.accessToken) {
-          setUser((pre) => ({ ...pre, ...data.data.user }));
+          setUser(pre => ({ ...pre, ...data.data.user }));
           setAccessToken(data.data.accessToken);
           console.log(data.data.accessToken);
         }
@@ -39,8 +34,37 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Root user={user} setUser={setUser} />}>
-          <Route path="/favorites" element={<FavoritesPage user={user} />} />
+        <Route path='/' element={<Root user={user} setUser={setUser} />}>
+          {/* Базовый маршрут редирект на /recipes */}
+          <Route path='/' element={<Navigate to='/recipes' />} />
+
+          {/* Регистрация */}
+          <Route
+            path='/auth'
+            element={<AuthPage isAuthProp='auth' setUser={setUser} />}
+          ></Route>
+
+          {/* Избранное с защитой для незарегистрированных пользователей */}
+          <Route
+            path='/favorites'
+            element={
+              <ProtectedRoute isAuthenticated={user} redirectTo='/recipes'>
+                <FavoritesPage user={user} />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Рецепты */}
+          <Route
+            path='/recipes'
+            element={<MainPage user={user} setUser={setUser} />}
+          />
+
+          {/* Детальная информация рецепта */}
+          <Route
+            path='/recipes/:id'
+            element={<RecipeDetailsPage user={user} />}
+          />
           {/* <Route
             path="/auth"
             element={
@@ -52,13 +76,6 @@ function App() {
               </ProtectedRoute>
             }
           /> */}
-
-          <Route path="/auth" element={<AuthPage isAuthProp="auth" setUser={setUser} />}></Route>
-          <Route path="/recipes" element={<MainPage user={user} setUser={setUser}/>} />
-          <Route
-            path="/recipes/:id"
-            element={<RecipeDetailsPage user={user} />}
-          />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import UserApi from '../../entities/user/UserApi';
+import ThemeToggle from '../../components/ThemeToggle';
 
 function Header({ user, setUser }) {
-  // console.log(' user:', user.name);
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const closeTimeoutRef = useRef(null);
@@ -11,10 +11,9 @@ function Header({ user, setUser }) {
   const logoutHandler = async () => {
     try {
       const data = await UserApi.logout();
-      // console.log(data)
       if (data.statusCode === 200) {
         setUser(null);
-        navigate('/recipes');
+        navigate('/auth');
       } else {
         console.log(data.error);
       }
@@ -37,7 +36,7 @@ function Header({ user, setUser }) {
   };
 
   return (
-    <header className='bg-white shadow-sm border-b border-orange-100 py-3 mb-2 relative'>
+    <header className='bg-white shadow-sm border-b border-orange-100 py-3 relative'>
       <div className='max-w-7xl mx-auto px-8 flex items-center justify-between'>
         {/* ЛОГО (слева) */}
         <div className='flex-1'>
@@ -51,14 +50,25 @@ function Header({ user, setUser }) {
         </div>
 
         {/* НАЗВАНИЕ (по центру) */}
-        <div className='flex-1 text-center'>
+        <NavLink to='/recipes' className='flex-1 text-center'>
           <h1 className='text-5xl font-bold text-emerald-700 tracking-tight'>
             FreshBuffet
           </h1>
-        </div>
+        </NavLink>
 
         <div className='flex-1 flex justify-end items-center gap-5 relative'>
-          {user?.name ? <p className='max-w-[150px] truncate text-gray-700 font-medium text-2xl'>{user.name}</p> : ''}
+          {user?.name ? (
+            <NavLink
+              to='/favorites'
+              className='relative inline-block text-gray-700 font-medium text-2xl max-w-[150px] truncate after:block after:h-[2px] after:bg-gray-700 after:scale-x-0 after:transition-transform after:duration-300 after:origin-center hover:after:scale-x-100'
+            >
+              {user.name}
+            </NavLink>
+          ) : (
+            ''
+          )}
+
+          <ThemeToggle />
 
           {user ? (
             <div
@@ -84,7 +94,7 @@ function Header({ user, setUser }) {
               </div>
 
               {menuOpen && (
-                <div className='absolute right-0 w-40 bg-white border border-gray-200 rounded-md shadow-md py-0 z-50'>
+                <div className='absolute right-2 top-14 w-40 bg-white border border-gray-200 rounded-md shadow-md py-0 z-50'>
                   <button
                     onClick={() => {
                       navigate('/favorites');
@@ -94,6 +104,7 @@ function Header({ user, setUser }) {
                   >
                     Избранное
                   </button>
+
                   <button
                     onClick={() => {
                       logoutHandler();

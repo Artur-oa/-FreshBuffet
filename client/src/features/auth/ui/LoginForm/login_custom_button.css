@@ -1,9 +1,9 @@
 /* From Uiverse.io by alexroumi — адаптация с custom-button */
 
 .login-custom-button {
-  padding: 15px 25px;
+  padding: 13px 25px;
   border: none;
-  border-radius: 15px;
+  border-radius: 5px;
   color: white !important;
   z-index: 1;
   background: #000000 !important;
@@ -22,7 +22,6 @@
   left: 0;
   height: 100%;
   width: 0;
-  border-radius: 15px;
   background-color: #15802d;
   z-index: -1;
   box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27) !important;
