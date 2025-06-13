@@ -1,7 +1,7 @@
 const RecipesService = require("../services/Recipes.service");
 const formatResponse = require("../utils/formatResponse");
 const { Favorite } = require("../../db/models");
-
+// Привет
 class RecipesController {
   // Получение всех рецептов с пагинацией
   static async getAllRecipes(req, res) {
