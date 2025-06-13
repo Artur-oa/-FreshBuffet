@@ -14,11 +14,10 @@ export default function AuthPage({ setMyUser, setUser }) {
   const [isReg, setIsReg] = useState(true);
 
   return (
-    // Контейнер всей страницы авторизации
-    <div className='w-full min-h-screen overflow-x-hidden flex items-center justify-center p-4'>
-      <div className='w-full max-w-sm min-h-[420px] bg-white rounded-xl shadow-md px-4 py-3 flex flex-col justify-start pt-3'>
+    <div className='flex flex-col items-center justify-center grow'>
+      <div className='w-full max-w-sm bg-white rounded-xl shadow-md px-10 py-6 flex flex-col items-center'>
         {/* Вкладки */}
-        <div className='flex justify-around mt-6 mb-8 pl-10 pr-10'>
+        <div className='flex justify-around w-full mb-6'>
           <button
             className={`text-lg font-semibold ${
               isReg
@@ -42,7 +41,7 @@ export default function AuthPage({ setMyUser, setUser }) {
         </div>
 
         {/* Форма */}
-        <div className='space-y-5 w-[80%] mx-auto'>
+        <div className='space-y-4 w-full'>
           {isReg ? (
             <RegForm setUser={setUser} setMyUser={setMyUser} />
           ) : (

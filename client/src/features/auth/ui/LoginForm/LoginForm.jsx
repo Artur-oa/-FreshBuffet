@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { UserValidator } from '../../../../entities/user/User.validator';
 import UserApi from '../../../../entities/user/UserApi';
 import { setAccessToken } from '../../../../shared/lib/axiosInstance';
+import './login_custom_button.css';
 
 const INITIAL_INPUT_DATA = {
   email: '',
@@ -46,7 +47,7 @@ export default function LoginForm({ user, setUser }) {
   };
 
   const { email, password } = inputs;
-  
+
   return (
     <form
       onSubmit={sumbitHandler}
@@ -71,12 +72,7 @@ export default function LoginForm({ user, setUser }) {
         className='w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-400'
       />
 
-      <button
-        type='submit'
-        className='w-full bg-black text-white py-2 rounded-md hover:bg-gray-900 transition-all font-medium mt-2'
-      >
-        Войти
-      </button>
+      <button class='login-custom-button'>Войти</button>
     </form>
   );
 }

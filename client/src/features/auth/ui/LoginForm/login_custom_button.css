@@ -1,0 +1,37 @@
+/* From Uiverse.io by alexroumi — адаптация с custom-button */
+
+.login-custom-button {
+  padding: 13px 25px;
+  border: none;
+  border-radius: 5px;
+  color: white !important;
+  z-index: 1;
+  background: #000000 !important;
+  position: relative;
+  font-weight: 1000;
+  font-size: 17px;
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27) !important;
+  transition: all 250ms;
+  overflow: hidden;
+}
+
+.login-custom-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background-color: #15802d;
+  z-index: -1;
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27) !important;
+  transition: all 250ms;
+}
+
+.login-custom-button:hover {
+  color: white !important;
+}
+
+.login-custom-button:hover::before {
+  width: 100%;
+}

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import UserApi from '../../entities/user/UserApi';
+import ThemeToggle from '../../components/ThemeToggle';
 
 function Header({ user, setUser }) {
   const navigate = useNavigate();
@@ -10,10 +11,9 @@ function Header({ user, setUser }) {
   const logoutHandler = async () => {
     try {
       const data = await UserApi.logout();
-      // console.log(data)
       if (data.statusCode === 200) {
         setUser(null);
-        navigate('/recipes');
+        navigate('/auth');
       } else {
         console.log(data.error);
       }
@@ -36,8 +36,8 @@ function Header({ user, setUser }) {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-orange-100 py-2 mb-2 relative">
-      <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
+    <header className='bg-white shadow-sm border-b border-orange-100 py-3 relative'>
+      <div className='max-w-7xl mx-auto px-8 flex items-center justify-between'>
         {/* ЛОГО (слева) */}
         <div className="flex-1">
           <NavLink to="/recipes" className="text-lime-700 text-xl font-bold">
@@ -50,26 +50,51 @@ function Header({ user, setUser }) {
         </div>
 
         {/* НАЗВАНИЕ (по центру) */}
-        <div className="flex-1 text-center">
-          <h1 className="text-5xl font-bold text-emerald-700 tracking-tight">
+        <NavLink to='/recipes' className='flex-1 text-center'>
+          <h1 className='text-5xl font-bold text-emerald-700 tracking-tight'>
             FreshBuffet
           </h1>
-        </div>
+        </NavLink>
 
-        {/* БУРГЕР-МЕНЮ (справа) */}
-        <div className="flex-1 flex justify-end relative">
+        <div className='flex-1 flex justify-end items-center gap-5 relative'>
+          {user?.name ? (
+            <NavLink
+              to='/favorites'
+              className='relative inline-block text-gray-700 font-medium text-2xl max-w-[150px] truncate after:block after:h-[2px] after:bg-gray-700 after:scale-x-0 after:transition-transform after:duration-300 after:origin-center hover:after:scale-x-100'
+            >
+              {user.name}
+            </NavLink>
+          ) : (
+            ''
+          )}
+
+          <ThemeToggle />
+
           {user ? (
             <div
-              className="relative"
-              onMouseEnter={handleMouseEnter} // навел курсор на элемент
-              onMouseLeave={handleMouseLeave} // отвел курсор
+              className='relative'
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
-              {/* <button className='text-xl text-orange-600 font-semibold hover:underline'> */}
-              <span className="material-symbols-outlined text-4xl">menu</span>
-              {/* </button> */}
+              <div className='relative w-10 h-10 mt-2 flex items-center justify-center'>
+                <span
+                  className={`material-symbols-outlined absolute top-0 left-0 text-4xl text-orange-600 transition-opacity duration-300 ease-in-out ${
+                    menuOpen ? 'opacity-0' : 'opacity-100'
+                  } cursor-pointer`}
+                >
+                  menu
+                </span>
+                <span
+                  className={`material-symbols-outlined absolute top-0 left-0 text-4xl text-orange-500 transition-opacity duration-300 ease-in-out ${
+                    menuOpen ? 'opacity-100' : 'opacity-0'
+                  } cursor-pointer`}
+                >
+                  list
+                </span>
+              </div>
 
               {menuOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-md py-2 z-50">
+                <div className='absolute right-2 top-14 w-40 bg-white border border-gray-200 rounded-md shadow-md py-0 z-50'>
                   <button
                     onClick={() => {
                       navigate('/favorites');
@@ -79,6 +104,7 @@ function Header({ user, setUser }) {
                   >
                     Избранное
                   </button>
+
                   <button
                     onClick={() => {
                       logoutHandler();
