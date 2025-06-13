@@ -17,7 +17,7 @@ class RecipesController {
           statusCode: 200,
           message: "Все рецепты",
           data: recipes,
-        })
+        }),
       );
     } catch ({ message }) {
       console.error(message);
@@ -26,7 +26,7 @@ class RecipesController {
           statusCode: 500,
           message: "Внутренняя ошибка сервера",
           error: message,
-        })
+        }),
       );
     }
   }
@@ -43,7 +43,7 @@ class RecipesController {
             statusCode: 404,
             message: "Рецепт не найден",
             error: "Рецепт не найден",
-          })
+          }),
         );
       }
 
@@ -52,7 +52,7 @@ class RecipesController {
           statusCode: 200,
           message: "Рецепт получен",
           data: recipe,
-        })
+        }),
       );
     } catch ({ message }) {
       console.error(message);
@@ -61,7 +61,7 @@ class RecipesController {
           statusCode: 500,
           message: "Внутренняя ошибка сервера",
           error: message,
-        })
+        }),
       );
     }
   }
@@ -76,7 +76,7 @@ class RecipesController {
           statusCode: 201,
           message: "Загружено из API",
           data: savedRecipes,
-        })
+        }),
       );
     } catch ({ message }) {
       console.error(message);
@@ -85,7 +85,30 @@ class RecipesController {
           statusCode: 500,
           message: "Ошибка загрузки из Spoonacular",
           error: message,
-        })
+        }),
+      );
+    }
+  }
+
+  static async getRandomRecipes(req, res) {
+    try {
+      const randomRecipes = await RecipesService.getRandom(10);
+
+      res.status(200).json(
+        formatResponse({
+          statusCode: 200,
+          message: "Загружено из API",
+          data: randomRecipes,
+        }),
+      );
+    } catch ({ message }) {
+      console.error(error.message); // <-- Было пусто
+      res.status(500).json(
+        formatResponse({
+          statusCode: 500,
+          message: "Ошибка при получении случайных рецептов",
+          error: error.message,
+        }),
       );
     }
   }

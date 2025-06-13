@@ -39,19 +39,19 @@ function Header({ user, setUser }) {
     <header className='bg-white shadow-sm border-b border-orange-100 py-3 relative'>
       <div className='max-w-7xl mx-auto px-8 flex items-center justify-between'>
         {/* ЛОГО (слева) */}
-        <div className="flex-1">
-          <NavLink to="/recipes" className="text-lime-700 text-xl font-bold">
+        <div className='flex-1'>
+          <NavLink to='/recipes' className='text-lime-700 text-xl font-bold'>
             <img
-              src="/assets/logo_2_4.png"
-              alt="Логотип FreshBuffet"
-              className="h-12 w-auto object-contain"
+              src='/assets/logo_2_4.png'
+              alt='Логотип FreshBuffet'
+              className='h-12 w-auto object-contain'
             />
           </NavLink>
         </div>
 
         {/* НАЗВАНИЕ (по центру) */}
         <NavLink to='/recipes' className='flex-1 text-center'>
-          <h1 className='text-5xl font-bold text-emerald-700 tracking-tight'>
+          <h1 className='text-5xl font-bold text-emerald-700 tracking-tight transition-transform duration-300 hover:scale-101'>
             FreshBuffet
           </h1>
         </NavLink>
@@ -100,7 +100,7 @@ function Header({ user, setUser }) {
                       navigate('/favorites');
                       setMenuOpen(false);
                     }}
-                    className="w-full text-left px-4 py-2 hover:bg-orange-50 text-gray-700"
+                    className='w-full text-left px-4 py-2 hover:bg-orange-50 text-gray-700 cursor-pointer'
                   >
                     Избранное
                   </button>
@@ -110,7 +110,7 @@ function Header({ user, setUser }) {
                       logoutHandler();
                       setMenuOpen(false);
                     }}
-                    className="w-full text-left px-4 py-2 hover:bg-orange-100 text-red-600"
+                    className='w-full text-left px-4 py-2 hover:bg-orange-100 text-red-600 cursor-pointer'
                   >
                     Выйти
                   </button>
@@ -119,8 +119,8 @@ function Header({ user, setUser }) {
             </div>
           ) : (
             <NavLink
-              to="/auth"
-              className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-500 transition-all text-base"
+              to='/auth'
+              className='bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-500 transition-all text-base'
             >
               Войти
             </NavLink>

@@ -26,11 +26,11 @@ export default function ThemeToggle() {
     >
       {isDark ? (
         <span className='text-xl translate-x-[1px] translate-y-[1px]'>
-          <i class='bx bx-moon'></i>
+          <i className='bx bx-moon'></i>
         </span>
       ) : (
         <span className='text-xl translate-x-[1px] translate-y-[1px]'>
-          <i class='bx bxs-moon'></i>
+          <i className='bx bxs-moon'></i>
         </span>
       )}
     </button>
