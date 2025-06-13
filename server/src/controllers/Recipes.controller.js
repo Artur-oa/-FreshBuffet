@@ -102,7 +102,31 @@ class RecipesController {
         }),
       );
     } catch ({ message }) {
-      console.error(error.message); // <-- Было пусто
+      console.error(message);
+      res.status(500).json(
+        formatResponse({
+          statusCode: 500,
+          message: "Ошибка при получении случайных рецептов",
+          error: error.message,
+        }),
+      );
+    }
+  }
+
+  static async getFavoritesCount(req, res) {
+    try {
+      const { id } = req.params;
+      const favoritesCount = await RecipesService.getCount(id);
+
+      res.status(200).json(
+        formatResponse({
+          statusCode: 200,
+          message: "Загружено из API",
+          data: favoritesCount,
+        }),
+      );
+    } catch ({ message }) {
+      console.error(message);
       res.status(500).json(
         formatResponse({
           statusCode: 500,
