@@ -11,6 +11,12 @@ class RecipesApi {
     return response.data;
   }
 
+  static async getRandomRecipes() {
+    const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/random`);
+
+    return response.data;
+  }
+
   static async getById(id) {
   const response = await axios.get(`${VITE_TARGET}${VITE_API}/recipes/${id}`);
   return response.data;

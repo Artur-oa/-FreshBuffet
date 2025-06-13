@@ -17,7 +17,7 @@ class RecipesController {
           statusCode: 200,
           message: "Все рецепты",
           data: recipes,
-        })
+        }),
       );
     } catch ({ message }) {
       console.error(message);
@@ -26,7 +26,7 @@ class RecipesController {
           statusCode: 500,
           message: "Внутренняя ошибка сервера",
           error: message,
-        })
+        }),
       );
     }
   }
@@ -43,7 +43,7 @@ class RecipesController {
             statusCode: 404,
             message: "Рецепт не найден",
             error: "Рецепт не найден",
-          })
+          }),
         );
       }
 
@@ -52,7 +52,7 @@ class RecipesController {
           statusCode: 200,
           message: "Рецепт получен",
           data: recipe,
-        })
+        }),
       );
     } catch ({ message }) {
       console.error(message);
@@ -61,7 +61,7 @@ class RecipesController {
           statusCode: 500,
           message: "Внутренняя ошибка сервера",
           error: message,
-        })
+        }),
       );
     }
   }
@@ -76,7 +76,7 @@ class RecipesController {
           statusCode: 201,
           message: "Загружено из API",
           data: savedRecipes,
-        })
+        }),
       );
     } catch ({ message }) {
       console.error(message);
@@ -85,8 +85,15 @@ class RecipesController {
           statusCode: 500,
           message: "Ошибка загрузки из Spoonacular",
           error: message,
-        })
+        }),
       );
+    }
+  }
+
+  static async getRandomRecipes(req, res) {
+    try {
+    } catch ({ message }) {
+      console.error();
     }
   }
 }
