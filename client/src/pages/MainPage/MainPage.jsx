@@ -206,6 +206,7 @@ function MainPage({ user, myUser, setUser }) {
 
   return (
     <div className='p-8 max-w-l mx-auto'>
+      {/* <p className='text-xl font-medium text-center text-gray-600 mb-12 tracking-tight'>Свежий вкус — каждый день!</p> */}
       {/* Популярные рецепты */}
       {popularRecipes.length > 0 && (
         <div className='mb-12'>
